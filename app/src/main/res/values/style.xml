@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:statusBarColor">@color/brown_old</item>
+    </style>
+
+    <style name="Button_Style_Brown" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/shape_button_brown</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="App_Custom_Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/brown_old</item>
+    </style>
+
+</resources>
