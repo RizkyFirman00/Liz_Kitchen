@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBar2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:elevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -75,57 +75,20 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        app:layout_constraintBottom_toBottomOf="@+id/topAppBar2"
-        app:layout_constraintEnd_toEndOf="@+id/topAppBar2"
-        app:layout_constraintTop_toTopOf="@+id/topAppBar2">
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/btn_toLogout"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/brown_old"
-            android:src="@drawable/baseline_logout_24_whit" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        android:padding="15dp"
-        app:layout_constraintEnd_toEndOf="topAppBar"
-        app:layout_constraintStart_toStartOf="topAppBar"
+        android:paddingHorizontal="25dp"
+        android:paddingTop="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_updateData"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topAppBar2">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:fontFamily="@font/poppins_regular"
-            android:hint="Username"
-            android:textSize="14sp"
-            app:boxCornerRadiusBottomEnd="15dp"
-            app:boxCornerRadiusBottomStart="15dp"
-            app:boxCornerRadiusTopEnd="15dp"
-            app:boxCornerRadiusTopStart="15dp"
-            app:boxStrokeColor="@color/brown_old"
-            app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/poppins_regular"
             android:hint="Email"
             android:textSize="14sp"
@@ -147,7 +110,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/poppins_regular"
             android:hint="No. Telepon"
             android:textSize="14sp"
@@ -159,7 +122,7 @@
             app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_telepon"
+                android:id="@+id/et_notelp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular" />
@@ -169,7 +132,29 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/poppins_regular"
+            android:hint="Username"
+            android:textSize="14sp"
+            app:boxCornerRadiusBottomEnd="15dp"
+            app:boxCornerRadiusBottomStart="15dp"
+            app:boxCornerRadiusTopEnd="15dp"
+            app:boxCornerRadiusTopStart="15dp"
+            app:boxStrokeColor="@color/brown_old"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/poppins_regular"
             android:hint="Alamat"
             android:textSize="14sp"
@@ -182,27 +167,43 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_alamat"
+                android:inputType="textMultiLine"
+                android:minLines="4"
+                android:maxLines="5"
+                android:gravity="top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                android:maxLines="5"
-                android:minLines="3"
-                android:scrollbars="vertical" />
+                android:fontFamily="@font/poppins_regular" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/topAppBar2"
+        app:layout_constraintEnd_toEndOf="@+id/topAppBar2"
+        app:layout_constraintTop_toTopOf="@+id/topAppBar2">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/btn_toLogout"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/brown_old"
+            android:src="@drawable/baseline_logout_24_whit" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_updateData"
         style="@style/Button_Style_Brown"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginBottom="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="25dp"
         android:fontFamily="@font/poppins_semibold"
         android:paddingVertical="10dp"
         android:text="Update Data"

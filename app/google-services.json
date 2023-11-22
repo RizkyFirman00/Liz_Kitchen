@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "815513082735",
+    "project_id": "lizkitchen-17e7b",
+    "storage_bucket": "lizkitchen-17e7b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815513082735:android:eb6e265a90a1ffd859a69a",
+        "android_client_info": {
+          "package_name": "com.dissy.lizkitchen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_vwnYrgZdcDqmszvoI1cjQQKqStY7Flo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
