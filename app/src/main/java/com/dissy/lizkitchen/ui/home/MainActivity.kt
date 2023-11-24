@@ -8,7 +8,6 @@ import android.widget.Toast
 import com.dissy.lizkitchen.databinding.ActivityMainBinding
 import com.dissy.lizkitchen.ui.login.LoginActivity
 import com.dissy.lizkitchen.ui.profile.ProfileActivity
-import com.dissy.lizkitchen.ui.register.RegisterActivity
 import com.dissy.lizkitchen.utility.Preferences
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val userId = Preferences.getUserId(this)
+        Log.d("ID Home", "$userId")
 
         binding.btnToProfile.setOnClickListener {
             Intent(this, ProfileActivity::class.java).also {

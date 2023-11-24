@@ -37,6 +37,11 @@ object Preferences {
         return sharedPref.getString("userId", null)
     }
 
+    fun getUsername(context: Context): String? {
+        val sharedPref = init(context, "onSignIn")
+        return sharedPref.getString("username", null)
+    }
+
     fun logout(context: Context){
         val editor = editor(context, "onSignIn")
         editor.remove("username")
