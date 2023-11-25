@@ -58,6 +58,7 @@ class AdminActivity : AppCompatActivity() {
                     cakesList.add(cakeData)
                 }
                 adminAdapter.submitList(cakesList)
+                adminAdapter.sortDataByName()
                 Log.d("AdminActivity", "Fetched data: $cakesList")
             }
             .addOnFailureListener { exception ->

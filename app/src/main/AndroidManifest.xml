@@ -29,6 +29,9 @@
         android:theme="@style/Theme.LizKitchen"
         tools:targetApi="31">
         <activity
+            android:name=".ui.home.CakeDetailUserActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.CakeDetailActivity"
             android:exported="false" />
         <activity

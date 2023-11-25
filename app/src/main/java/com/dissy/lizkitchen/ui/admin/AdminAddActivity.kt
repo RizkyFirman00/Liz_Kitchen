@@ -11,7 +11,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -39,7 +42,6 @@ class AdminAddActivity : AppCompatActivity() {
     val storage = Firebase.storage
     val storageRef = storage.reference
     private var file: File? = null
-    private lateinit var imageUrl: String
     private val cakeCollection = db.collection("cakes")
     private val binding by lazy { ActivityAdminAddBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,11 +132,7 @@ class AdminAddActivity : AppCompatActivity() {
             val gambar = file
             if (gambar != null && namaKue.isNotEmpty() && harga.isNotEmpty() && stok.isNotEmpty()) {
                 if (gambar != null) {
-                    uploadDataAndImage(gambar, namaKue, harga, stok)
-                    Intent(this, AdminActivity::class.java).also {
-                        startActivity(it)
-                        finish()
-                    }
+                    addDataToFirestore(namaKue, harga, stok)
                 }
             } else {
                 Toast.makeText(this, "Mohon isi semua data", Toast.LENGTH_SHORT).show()
@@ -218,17 +216,64 @@ class AdminAddActivity : AppCompatActivity() {
         }
     }
 
-    //Upload Image Function
-    private fun uploadDataAndImage(file: File, namaKue: String, harga: String, stok: String) {
-        uploadImageToFirebaseStorage(namaKue, file) { imageUrl ->
-            addDataToFirestore(namaKue, harga, stok, imageUrl)
+    private fun addDataToFirestore(namaKue: String, harga: String, stok: String) {
+        binding.apply {
+            progressBar2.visibility = View.VISIBLE
+            etHarga.isEnabled = false
+            etNamaKue.isEnabled = false
+            etStok.isEnabled = false
+            btnCamera.isEnabled = false
+            btnGaleri.isEnabled = false
         }
+        binding.progressBar2.visibility = View.VISIBLE
+        val cakeData = hashMapOf(
+            "namaKue" to namaKue,
+            "harga" to harga,
+            "stok" to stok,
+            "timestamp" to FieldValue.serverTimestamp()
+        )
+
+        cakeCollection.add(cakeData)
+            .addOnSuccessListener { documentReference ->
+                val documentId = documentReference.id
+                file?.let {
+                    uploadImageToFirebaseStorage(namaKue, it) { imageUrl ->
+                        // Tambahkan URL gambar ke data kue di Firestore
+                        updateImageUrl(documentId, imageUrl)
+                        Intent(this, AdminActivity::class.java).also {
+                            startActivity(it)
+                            finish()
+                        }
+                        binding.apply {
+                            progressBar2.visibility = View.GONE
+                            etHarga.isEnabled = true
+                            etNamaKue.isEnabled = true
+                            etStok.isEnabled = true
+                            btnCamera.isEnabled = true
+                            btnGaleri.isEnabled = true
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                binding.progressBar2.visibility = View.GONE
+                Toast.makeText(
+                    this,
+                    "Gagal menambahkan data: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
-    private fun uploadImageToFirebaseStorage(namaKue: String, file: File, onSuccess: (String) -> Unit) {
-        var image = Uri.fromFile(file)
+    private fun uploadImageToFirebaseStorage(
+        namaKue: String,
+        file: File,
+        onSuccess: (String) -> Unit
+    ) {
+        val image = Uri.fromFile(file)
         val storageRef = storageRef.child("cakes/$namaKue.jpg")
         val uploadTask = storageRef.putFile(image)
+
         uploadTask.addOnFailureListener { exception ->
             Toast.makeText(this, "Gagal upload gambar: ${exception.message}", Toast.LENGTH_SHORT)
                 .show()
@@ -244,16 +289,9 @@ class AdminAddActivity : AppCompatActivity() {
         }
     }
 
-    private fun addDataToFirestore(namaKue: String, harga: String, stok: String, imageUrl: String) {
-        val cakeData = hashMapOf(
-            "namaKue" to namaKue,
-            "harga" to harga,
-            "stok" to stok,
-            "imageUrl" to imageUrl,
-            "timestamp" to FieldValue.serverTimestamp()
-        )
-
-        cakeCollection.document(namaKue).set(cakeData)
+    private fun updateImageUrl(cakeId: String, imageUrl: String) {
+        cakeCollection.document(cakeId)
+            .update("imageUrl", imageUrl)
             .addOnSuccessListener {
                 Toast.makeText(this, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
                 finish()
@@ -266,5 +304,4 @@ class AdminAddActivity : AppCompatActivity() {
                 ).show()
             }
     }
-
 }

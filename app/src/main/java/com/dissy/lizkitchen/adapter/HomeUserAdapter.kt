@@ -1,39 +1,39 @@
 package com.dissy.lizkitchen.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.databinding.RvAdminBinding
+import com.dissy.lizkitchen.databinding.RvHomeBinding
 import com.dissy.lizkitchen.model.Cake
 
-class HomeAdminAdapter(private val onItemClick: (String) -> Unit) :
-    androidx.recyclerview.widget.ListAdapter<Cake, HomeAdminAdapter.HomeAdminViewHolder>(
+class HomeUserAdapter(private val onItemClick: (String) -> Unit) :
+    androidx.recyclerview.widget.ListAdapter<Cake, HomeUserAdapter.HomeUserViewHolder>(
         DiffCallback()
     ) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdminViewHolder {
+    private val cakesList = mutableListOf<String>()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeUserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = RvAdminBinding.inflate(inflater, parent, false)
-        return HomeAdminViewHolder(binding)
+        val binding = RvHomeBinding.inflate(inflater, parent, false)
+        return HomeUserViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: HomeAdminViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HomeUserViewHolder, position: Int) {
         val indekos = getItem(position)
         holder.bind(indekos, onItemClick)
     }
 
-    inner class HomeAdminViewHolder(
-        private val binding: RvAdminBinding,
+    inner class HomeUserViewHolder(
+        private val binding: RvHomeBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cake: Cake, onItemClick: (String) -> Unit) {
             binding.apply {
                 tvCakeName.text = cake.namaKue
                 tvPrice.text = cake.harga
-                tvStok.text = cake.stok
+                tvStock.text = cake.stok
                 Glide.with(itemView.context)
                     .load(cake.imageUrl)
                     .into(ivCakeBanner)

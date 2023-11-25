@@ -9,6 +9,11 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="Button_Style_Red" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/shape_button_red</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="App_Custom_Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/brown_old</item>
     </style>
