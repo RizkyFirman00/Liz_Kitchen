@@ -29,6 +29,9 @@
         android:theme="@style/Theme.LizKitchen"
         tools:targetApi="31">
         <activity
+            android:name=".ui.admin.CakeDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.admin.AdminAddActivity"
             android:exported="false" />
         <activity
@@ -55,6 +58,16 @@
         <activity
             android:name=".ui.home.MainActivity"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.dissy.lizkitchen"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

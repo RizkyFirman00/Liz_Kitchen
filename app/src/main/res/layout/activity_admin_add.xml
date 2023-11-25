@@ -96,10 +96,12 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             app:cardCornerRadius="10dp">
+
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivBanner"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:src="@drawable/null_image"/>
+                android:src="@drawable/null_image" />
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -109,22 +111,24 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_galeri"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="7dp"
+                android:layout_weight="1"
                 android:background="@drawable/shape_button_brown"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Galeri"
-                android:layout_marginEnd="7dp"
                 android:textAllCaps="false"
-                android:layout_weight="1"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_camera"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="7dp"
+                android:layout_weight="1"
                 android:background="@drawable/shape_button_brown"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Kamera"
@@ -168,14 +172,15 @@
             app:boxCornerRadiusTopEnd="15dp"
             app:boxCornerRadiusTopStart="15dp"
             app:boxStrokeColor="@color/brown_old"
-            app:endIconMode="clear_text">
+            app:endIconMode="clear_text"
+            app:prefixText="Rp.">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_harga"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
-                android:inputType="textPassword" />
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -198,7 +203,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
-                android:inputType="textPassword" />
+                android:inputType="number"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

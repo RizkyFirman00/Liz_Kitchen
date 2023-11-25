@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.dissy.lizkitchen.databinding.ActivityLoginBinding
+import com.dissy.lizkitchen.ui.admin.AdminActivity
 import com.dissy.lizkitchen.ui.home.MainActivity
 import com.dissy.lizkitchen.ui.register.RegisterActivity
 import com.dissy.lizkitchen.utility.Preferences
@@ -24,7 +25,13 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if (Preferences.checkUsername(this)) {
+        val usernameCheck = Preferences.getUsername(this)
+        if (Preferences.checkUsername(this) && usernameCheck == "admin") {
+            Intent(this, AdminActivity::class.java).also {
+                startActivity(it)
+                finish()
+            }
+        } else if (Preferences.checkUsername(this)) {
             Intent(this, MainActivity::class.java).also {
                 startActivity(it)
                 finish()
@@ -42,9 +49,17 @@ class LoginActivity : AppCompatActivity() {
             val username = binding.etUsername.text.toString()
             val password = binding.etPassword.text.toString()
 
-            CoroutineScope(Dispatchers.Main).launch {
-                val loginResult = loginUser(username, password)
-                handleLoginResult(loginResult)
+            if (username == "admin" && password == "admin") {
+                Preferences.saveUsername(username, this)
+                Intent(this, AdminActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
+            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    val loginResult = loginUser(username, password)
+                    handleLoginResult(loginResult)
+                }
             }
         }
     }
