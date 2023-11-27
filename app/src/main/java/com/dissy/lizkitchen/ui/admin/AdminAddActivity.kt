@@ -40,9 +40,7 @@ class AdminAddActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private lateinit var photoPath: String
     val storage = Firebase.storage
-    val storageRef = storage.reference
     private var file: File? = null
-    private val cakeCollection = db.collection("cakes")
     private val binding by lazy { ActivityAdminAddBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,11 +129,87 @@ class AdminAddActivity : AppCompatActivity() {
             val stok = binding.etStok.text.toString()
             val gambar = file
             if (gambar != null && namaKue.isNotEmpty() && harga.isNotEmpty() && stok.isNotEmpty()) {
-                if (gambar != null) {
-                    addDataToFirestore(namaKue, harga, stok)
-                }
+                uploadImageAndGetUrl(namaKue, harga, stok, gambar)
             } else {
-                Toast.makeText(this, "Mohon isi semua data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Data tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun uploadImageAndGetUrl(namaKue: String, harga: String, stok: String, gambar: File) {
+        binding.apply {
+            progressBar2.visibility = View.VISIBLE
+            etNamaKue.isEnabled = false
+            etHarga.isEnabled = false
+            etStok.isEnabled = false
+            btnCamera.isEnabled = false
+            btnGaleri.isEnabled = false
+        }
+        val storageRef = storage.reference
+        val imageRef = storageRef.child("images/${namaKue}")
+        val uploadTask = imageRef.putFile(Uri.fromFile(gambar))
+
+        uploadTask.addOnSuccessListener { taskSnapshot ->
+            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                val url = uri.toString()
+                Log.d("AdminAddActivity", "URL: $url")
+                val data = hashMapOf(
+                    "namaKue" to namaKue,
+                    "harga" to harga,
+                    "stok" to stok,
+                    "imageUrl" to url
+                )
+                db.collection("cakes")
+                    .add(data)
+                    .addOnSuccessListener { documentReference ->
+                        val generatedDocumentId = documentReference.id
+                        db.collection("cakes").document(generatedDocumentId)
+                            .update("documentId", generatedDocumentId)
+                            .addOnSuccessListener {
+                                binding.apply {
+                                    progressBar2.visibility = View.GONE
+                                    etNamaKue.isEnabled = true
+                                    etHarga.isEnabled = true
+                                    etStok.isEnabled = true
+                                    btnCamera.isEnabled = true
+                                    btnGaleri.isEnabled = true
+                                }
+                                Log.d(
+                                    "AdminAddActivity",
+                                    "DocumentSnapshot added with ID: $generatedDocumentId"
+                                )
+                                Toast.makeText(
+                                    this,
+                                    "Data berhasil ditambahkan",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Intent(this, AdminActivity::class.java).also {
+                                    startActivity(it)
+                                    finish()
+                                }
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w("AdminAddActivity", "Error updating document", e)
+                                Toast.makeText(
+                                    this,
+                                    "Error updating document: ${e.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        Toast.makeText(this, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
+                        Intent(this, AdminActivity::class.java).also {
+                            startActivity(it)
+                            finish()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("AdminAddActivity", "Error adding document", e)
+                        Toast.makeText(
+                            this,
+                            "Error adding document: ${e.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
             }
         }
     }
@@ -214,94 +288,5 @@ class AdminAddActivity : AppCompatActivity() {
                 .load(selectedImg)
                 .into(binding.ivBanner)
         }
-    }
-
-    private fun addDataToFirestore(namaKue: String, harga: String, stok: String) {
-        binding.apply {
-            progressBar2.visibility = View.VISIBLE
-            etHarga.isEnabled = false
-            etNamaKue.isEnabled = false
-            etStok.isEnabled = false
-            btnCamera.isEnabled = false
-            btnGaleri.isEnabled = false
-        }
-        binding.progressBar2.visibility = View.VISIBLE
-        val cakeData = hashMapOf(
-            "namaKue" to namaKue,
-            "harga" to harga,
-            "stok" to stok,
-            "timestamp" to FieldValue.serverTimestamp()
-        )
-
-        cakeCollection.add(cakeData)
-            .addOnSuccessListener { documentReference ->
-                val documentId = documentReference.id
-                file?.let {
-                    uploadImageToFirebaseStorage(namaKue, it) { imageUrl ->
-                        // Tambahkan URL gambar ke data kue di Firestore
-                        updateImageUrl(documentId, imageUrl)
-                        Intent(this, AdminActivity::class.java).also {
-                            startActivity(it)
-                            finish()
-                        }
-                        binding.apply {
-                            progressBar2.visibility = View.GONE
-                            etHarga.isEnabled = true
-                            etNamaKue.isEnabled = true
-                            etStok.isEnabled = true
-                            btnCamera.isEnabled = true
-                            btnGaleri.isEnabled = true
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener { exception ->
-                binding.progressBar2.visibility = View.GONE
-                Toast.makeText(
-                    this,
-                    "Gagal menambahkan data: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }
-
-    private fun uploadImageToFirebaseStorage(
-        namaKue: String,
-        file: File,
-        onSuccess: (String) -> Unit
-    ) {
-        val image = Uri.fromFile(file)
-        val storageRef = storageRef.child("cakes/$namaKue.jpg")
-        val uploadTask = storageRef.putFile(image)
-
-        uploadTask.addOnFailureListener { exception ->
-            Toast.makeText(this, "Gagal upload gambar: ${exception.message}", Toast.LENGTH_SHORT)
-                .show()
-        }.addOnSuccessListener { _ ->
-            storageRef.downloadUrl.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val imageUrl = task.result.toString()
-                    onSuccess(imageUrl)
-                } else {
-                    Toast.makeText(this, "Gagal mendapatkan URL gambar", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    private fun updateImageUrl(cakeId: String, imageUrl: String) {
-        cakeCollection.document(cakeId)
-            .update("imageUrl", imageUrl)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(
-                    this,
-                    "Gagal menambahkan data: ${exception.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
     }
 }

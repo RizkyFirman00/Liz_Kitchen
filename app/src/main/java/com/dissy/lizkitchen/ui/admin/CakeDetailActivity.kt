@@ -35,12 +35,61 @@ class CakeDetailActivity : AppCompatActivity() {
     private val storage = Firebase.storage
     private val storageRef = storage.reference
     private var file: File? = null
+    private var cakeImage: String? = null
     private val cakeCollection = db.collection("cakes")
-    private lateinit var cakeId: String
+    private var isImageChanged = false
     private val binding by lazy { ActivityCakeDetailBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val cakeId = intent.getStringExtra("documentId")
+
+        if (cakeId != null) {
+            binding.apply {
+                progressBar2.visibility = View.VISIBLE
+                etHarga.isEnabled = false
+                etNamaKue.isEnabled = false
+                etStok.isEnabled = false
+                btnCamera.isEnabled = false
+                btnGaleri.isEnabled = false
+            }
+            db.collection("cakes")
+                .document(cakeId)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.w("Firestore", "Listen failed.", error)
+                        return@addSnapshotListener
+                    }
+                    if (snapshot != null && snapshot.exists()) {
+                        binding.apply {
+                            progressBar2.visibility = View.GONE
+                            etHarga.isEnabled = true
+                            etNamaKue.isEnabled = true
+                            etStok.isEnabled = true
+                            btnCamera.isEnabled = true
+                            btnGaleri.isEnabled = true
+                        }
+                        val namaKue = snapshot.getString("namaKue")
+                        val harga = snapshot.getString("harga")
+                        val stok = snapshot.getString("stok")
+                        val imageUrl = snapshot.getString("imageUrl")
+                        file = File(imageUrl)
+                        binding.apply {
+                            etNamaKue.setText(namaKue)
+                            etHarga.setText(harga)
+                            etStok.setText(stok)
+                            ivBanner.takeIf { !isDestroyed }?.let {
+                                Glide.with(this@CakeDetailActivity)
+                                    .load(imageUrl)
+                                    .into(it)
+                            }
+                        }
+                    } else {
+                        Log.d("Firestore", "Current data: null")
+                    }
+                }
+        }
 
         // Logika Currency Formatter
         val etHargaKue: EditText = binding.etHarga
@@ -106,10 +155,12 @@ class CakeDetailActivity : AppCompatActivity() {
 
         binding.btnCamera.setOnClickListener {
             startCamera()
+            isImageChanged = true
         }
 
         binding.btnGaleri.setOnClickListener {
             startGallery()
+            isImageChanged = true
         }
 
         binding.btnToHome.setOnClickListener {
@@ -119,89 +170,44 @@ class CakeDetailActivity : AppCompatActivity() {
             }
         }
 
-        val cakeName = intent.getStringExtra("cakeName")
-        //saya ingin mencari id dari cakeName yang dikirimkan dari HomeAdminAdapter
-        if (cakeName != null) {
-            binding.apply {
-                progressBar2.visibility = View.VISIBLE
-                etHarga.isEnabled = false
-                etNamaKue.isEnabled = false
-                etStok.isEnabled = false
-                btnCamera.isEnabled = false
-                btnGaleri.isEnabled = false
-            }
-            db.collection("cakes")
-                .whereEqualTo("namaKue", cakeName)
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    if (!querySnapshot.isEmpty) {
-                        binding.apply {
-                            progressBar2.visibility = View.GONE
-                            etHarga.isEnabled = true
-                            etNamaKue.isEnabled = true
-                            etStok.isEnabled = true
-                            btnCamera.isEnabled = true
-                            btnGaleri.isEnabled = true
-                        }
-                        val document = querySnapshot.documents[0]
-                        cakeId = document.id
-                        val namaKue = document.getString("namaKue")
-                        val harga = document.getString("harga")
-                        val stok = document.getString("stok")
-                        val imageUrl = document.getString("imageUrl")
-                        binding.apply {
-                            etNamaKue.setText(namaKue)
-                            etStok.setText(stok)
-                            etHarga.setText(harga)
-                            Glide.with(this@CakeDetailActivity)
-                                .load(imageUrl)
-                                .into(ivBanner)
-                        }
-                    } else {
-                        Toast.makeText(this, "Dokumen tidak ditemukan", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(
-                        this,
-                        "Gagal mengambil data: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-        }
-
         binding.btnUpdateData.setOnClickListener {
             val namaKue = binding.etNamaKue.text.toString()
             val harga = binding.etHarga.text.toString()
             val stok = binding.etStok.text.toString()
-            val gambar = file
-            if (gambar != null && namaKue.isNotEmpty() && harga.isNotEmpty() && stok.isNotEmpty()) {
-                if (gambar != null) {
-                    addDataToFirestore(namaKue, harga, stok)
+            val imageUrl = file
+            Log.d("CakeDetailActivity", "$namaKue, $harga, $stok, $imageUrl")
+            if (namaKue.isNotEmpty() || harga.isNotEmpty() || stok.isNotEmpty() && imageUrl != null) {
+                file?.let { it1 ->
+                    uploadImageAndGetUrl(
+                        cakeId as String, namaKue, harga, stok,
+                        it1
+                    )
                 }
             } else {
-                Toast.makeText(this, "Mohon isi semua data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Data tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
+            isImageChanged = false
         }
 
         binding.btnDeleteData.setOnClickListener {
-            cakeCollection.document(cakeId)
-                .delete()
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
-                    Intent(this, AdminActivity::class.java).also {
-                        startActivity(it)
-                        finish()
+            if (cakeId != null) {
+                cakeCollection.document(cakeId)
+                    .delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
+                        Intent(this, AdminActivity::class.java).also {
+                            startActivity(it)
+                            finish()
+                        }
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Toast.makeText(
-                        this,
-                        "Gagal menghapus data: ${exception.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                    .addOnFailureListener { exception ->
+                        Toast.makeText(
+                            this,
+                            "Gagal menghapus data: ${exception.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
         }
     }
 
@@ -281,91 +287,87 @@ class CakeDetailActivity : AppCompatActivity() {
         }
     }
 
-    //Upload Image Function
-    private fun addDataToFirestore(namaKue: String, harga: String, stok: String) {
+    private fun uploadImageAndGetUrl(
+        cakeId: String,
+        namaKue: String,
+        harga: String,
+        stok: String,
+        gambar: File
+    ) {
         binding.apply {
             progressBar2.visibility = View.VISIBLE
-            etHarga.isEnabled = false
             etNamaKue.isEnabled = false
+            etHarga.isEnabled = false
             etStok.isEnabled = false
             btnCamera.isEnabled = false
             btnGaleri.isEnabled = false
         }
-        binding.progressBar2.visibility = View.VISIBLE
-        val cakeData = hashMapOf(
-            "namaKue" to namaKue,
-            "harga" to harga,
-            "stok" to stok,
-            "timestamp" to FieldValue.serverTimestamp()
-        )
-
-        cakeCollection.add(cakeData)
-            .addOnSuccessListener { documentReference ->
-                val documentId = documentReference.id
-                file?.let {
-                    uploadImageToFirebaseStorage(documentId, it) { imageUrl ->
-                        // Tambahkan URL gambar ke data kue di Firestore
-                        updateImageUrl(documentId, imageUrl)
-                        Intent(this, AdminActivity::class.java).also {
-                            startActivity(it)
-                            finish()
-                        }
-                        binding.apply {
-                            progressBar2.visibility = View.GONE
-                            etHarga.isEnabled = true
-                            etNamaKue.isEnabled = true
-                            etStok.isEnabled = true
-                            btnCamera.isEnabled = true
-                            btnGaleri.isEnabled = true
-                        }
-                    }
+        if (isImageChanged) {
+            // Jika gambar berubah, upload gambar baru ke Firebase Storage
+            val storageRef = storage.reference
+            val imageRef = storageRef.child("images/${namaKue}")
+            val uploadTask = imageRef.putFile(Uri.fromFile(gambar))
+            Log.d("CakeDetailActivity", "uploadImageAndGetUrl: $gambar")
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                    val url = uri.toString()
+                    // Jika gambar berhasil diupload, perbarui data di Firestore
+                    updateDataInFirestore(cakeId, namaKue, harga, stok, url)
                 }
-            }
-            .addOnFailureListener { exception ->
-                binding.progressBar2.visibility = View.GONE
+            }.addOnFailureListener { exception ->
                 Toast.makeText(
                     this,
-                    "Gagal menambahkan data: ${exception.message}",
+                    "Gagal mengupload gambar: ${exception.message}",
                     Toast.LENGTH_SHORT
                 ).show()
             }
-    }
-
-    private fun uploadImageToFirebaseStorage(
-        documentId: String,
-        file: File,
-        onSuccess: (String) -> Unit
-    ) {
-        val image = Uri.fromFile(file)
-        val storageRef = storageRef.child("cakes/$documentId.jpg")
-        val uploadTask = storageRef.putFile(image)
-
-        uploadTask.addOnFailureListener { exception ->
-            Toast.makeText(this, "Gagal upload gambar: ${exception.message}", Toast.LENGTH_SHORT)
-                .show()
-        }.addOnSuccessListener { _ ->
-            storageRef.downloadUrl.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val imageUrl = task.result.toString()
-                    onSuccess(imageUrl)
-                } else {
-                    Toast.makeText(this, "Gagal mendapatkan URL gambar", Toast.LENGTH_SHORT).show()
-                }
-            }
+        } else if (gambar is File) {
+            // Jika gambar tidak berubah dan berupa File, gunakan URL gambar yang sudah ada di Firestore
+            Log.d("CakeDetailActivity", "else 2 uploadImageAndGetUrl: $gambar")
+            updateDataInFirestore(cakeId, namaKue, harga, stok, gambar.path)
+        } else {
+            // Kasus lainnya, misalnya jika gambar berupa URL String yang sudah ada di Firestore
+            Log.d("CakeDetailActivity", "else 3 uploadImageAndGetUrl: $gambar")
+            updateDataInFirestore(cakeId, namaKue, harga, stok, gambar as String)
+        }
+        binding.apply {
+            progressBar2.visibility = View.GONE
+            etNamaKue.isEnabled = true
+            etHarga.isEnabled = true
+            etStok.isEnabled = true
+            btnCamera.isEnabled = true
+            btnGaleri.isEnabled = true
         }
     }
 
-    private fun updateImageUrl(cakeId: String, imageUrl: String) {
+    private fun updateDataInFirestore(
+        cakeId: String,
+        namaKue: String,
+        harga: String,
+        stok: String,
+        imageUrl: String
+    ) {
+        val data = hashMapOf(
+            "namaKue" to namaKue,
+            "harga" to harga,
+            "stok" to stok,
+            "imageUrl" to imageUrl
+        )
+
+        // Perbarui data di Firestore
         cakeCollection.document(cakeId)
-            .update("imageUrl", imageUrl)
+            .update(data as Map<String, Any>)
             .addOnSuccessListener {
-                Toast.makeText(this, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-                finish()
+                Toast.makeText(this, "Data berhasil diupdate", Toast.LENGTH_SHORT).show()
+                Intent(this, AdminActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(
                     this,
-                    "Gagal menambahkan data: ${exception.message}",
+                    "Gagal mengupdate data: ${exception.message}",
                     Toast.LENGTH_SHORT
                 ).show()
             }

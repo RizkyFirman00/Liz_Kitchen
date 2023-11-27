@@ -86,7 +86,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_regular"
-                    android:text="Nastar"
+                    tools:text="Nastar"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="24sp" />
@@ -107,11 +107,11 @@
                         android:textSize="24sp" />
 
                     <TextView
-                        android:id="@+id/tvPrice"
+                        android:id="@+id/tvPriceCake"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_bold"
-                        android:text="20.000"
+                        tools:text="20.000"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="24sp" />
@@ -154,6 +154,7 @@
                             app:cardCornerRadius="20dp">
 
                             <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/ivImageBanner"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerCrop"
@@ -207,7 +208,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="20dp"
                             android:fontFamily="@font/poppins_semibold"
-                            android:text="3"
+                            tools:text="0"
+                            android:text="1"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp"
@@ -265,17 +267,40 @@
                 android:text="Total Harga"
                 android:textSize="15sp" />
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/price"
+                android:layout_alignParentEnd="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="Rp. 20.000"
-                android:textSize="15sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Rp. "
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tvPriceSum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    tools:text="0"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text=" /pcs"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
         </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_addCart"
             style="@style/Button_Style_Brown"
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -290,5 +315,20 @@
             android:textSize="15sp" />
 
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/brown_young"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

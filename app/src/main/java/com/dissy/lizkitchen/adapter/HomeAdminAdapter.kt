@@ -38,7 +38,7 @@ class HomeAdminAdapter(private val onItemClick: (String) -> Unit) :
                     .load(cake.imageUrl)
                     .into(ivCakeBanner)
                 root.setOnClickListener {
-                    onItemClick.invoke(cake.namaKue)
+                    onItemClick.invoke(cake.documentId)
                 }
             }
         }

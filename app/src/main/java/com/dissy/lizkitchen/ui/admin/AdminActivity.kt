@@ -67,9 +67,9 @@ class AdminActivity : AppCompatActivity() {
             }
     }
 
-    private fun navigateToDetailDataActivity(cakeName: String) {
+    private fun navigateToDetailDataActivity(cakeId: String) {
         val intent = Intent(this, CakeDetailActivity::class.java)
-        intent.putExtra("cakeName", cakeName)
+        intent.putExtra("documentId", cakeId)
         startActivity(intent)
     }
 }

@@ -219,7 +219,7 @@
         android:layout_marginBottom="25dp"
         android:fontFamily="@font/poppins_semibold"
         android:paddingVertical="10dp"
-        android:text="Update Data Kue"
+        android:text="Tambah Data Kue"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
