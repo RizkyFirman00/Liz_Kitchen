@@ -34,6 +34,26 @@ fun createCustomTempFile(context: Context): File {
     return File.createTempFile(timeStamp, ".jpg", storageDir)
 }
 
+fun String.convertStringToLong(): Long {
+    val cleanedString = this.replace(",", "")
+
+    return try {
+        cleanedString.toLong()
+    } catch (e: NumberFormatException) {
+        0
+    }
+}
+
+fun Long.convertLongToString(): String {
+    // Menggunakan format ribuan dengan tanda koma
+    val formattedString = String.format("%,d", this)
+
+    // Jika ingin menghilangkan tanda koma dan hanya mendapatkan angka, gunakan baris berikut:
+    // return formattedString.replace(",", "")
+
+    return formattedString
+}
+
 private const val FILENAME_FORMAT = "dd-MMM-yyyy"
 val timeStamp: String = SimpleDateFormat(
     FILENAME_FORMAT, Locale.US

@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.adapter.HomeAdminAdapter
 import com.dissy.lizkitchen.adapter.HomeUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityMainBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.ui.admin.CakeDetailActivity
+import com.dissy.lizkitchen.ui.cart.CartActivity
 import com.dissy.lizkitchen.ui.login.LoginActivity
 import com.dissy.lizkitchen.ui.profile.ProfileActivity
 import com.dissy.lizkitchen.utility.Preferences
@@ -51,6 +53,30 @@ class MainActivity : AppCompatActivity() {
                 startActivity(it)
                 finish()
             }
+        }
+
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_home -> {
+                    Intent(this, MainActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                R.id.navigation_cart -> {
+                    Intent(this, CartActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+//                R.id.navigation_history -> {
+//                    Intent(this, HistoryActivity::class.java).also {
+//                        startActivity(it)
+//                        finish()
+//                    }
+//                }
+            }
+            true
         }
     }
     private fun fetchDataAndUpdateRecyclerView() {

@@ -99,8 +99,8 @@ class CakeDetailUserActivity : AppCompatActivity() {
                     // Produk belum ada di keranjang, tambahkan produk baru
                     cartRef.set(
                         hashMapOf(
+                            "cake" to cakeId,
                             "jumlahPesanan" to jumlahPesanan,
-                            "hargaPerPcs" to hargaPerPcs
                         )
                     )
                         .addOnSuccessListener {
