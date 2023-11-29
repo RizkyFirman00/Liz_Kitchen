@@ -5,5 +5,5 @@ data class Cake @JvmOverloads constructor(
     val harga: String = "",
     val imageUrl: String = "",
     val namaKue: String = "",
-    val stok: String = "",
+    val stok: Long = 0,
 )

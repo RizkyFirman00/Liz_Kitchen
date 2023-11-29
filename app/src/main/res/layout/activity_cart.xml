@@ -25,8 +25,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:paddingTop="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topAppBar2"
@@ -121,7 +122,7 @@
         android:layout_height="wrap_content"
         android:elevation="8dp"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/rvCart"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="@+id/rvCart"
         app:layout_constraintStart_toStartOf="@+id/rvCart">
 
@@ -141,9 +142,9 @@
 
             <LinearLayout
                 android:id="@+id/price"
-                android:layout_alignParentEnd="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:orientation="horizontal">
 
                 <TextView
@@ -158,14 +159,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
-                    tools:text="0"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:text="0" />
             </LinearLayout>
 
         </RelativeLayout>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_addCart"
+            android:id="@+id/btn_checkout"
             style="@style/Button_Style_Brown"
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -175,7 +176,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="20dp"
             android:fontFamily="@font/poppins_semibold"
-            android:text="Tambah Pesanan"
+            android:text="Checkout"
             android:textAllCaps="false"
             android:textSize="15sp" />
 

@@ -15,7 +15,6 @@ class CartUserAdapter :
     androidx.recyclerview.widget.ListAdapter<Cart, CartUserAdapter.CartUserViewHolder>(
         DiffCallback()
     ) {
-    private val cakesList = mutableListOf<String>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartUserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = RvCartBinding.inflate(inflater, parent, false)
@@ -36,11 +35,6 @@ class CartUserAdapter :
                 tvCakeName.text = cart.cake.namaKue
                 tvPrice.text = cart.cake.harga
                 tvJmlh.text = cart.jumlahPesanan.toString()
-                val price = cart.cake.harga
-                val cleanPrice = price.replace(".", "")
-                val sumPrice = (cleanPrice.toLong() * cart.jumlahPesanan).toString()
-                tvPriceSum.text = formatAndDisplayCurrency(sumPrice)
-                Log.d("Price", formatAndDisplayCurrency(sumPrice))
                 Glide.with(itemView.context)
                     .load(cart.cake.imageUrl)
                     .into(ivCakeBanner)
@@ -55,37 +49,5 @@ class CartUserAdapter :
         override fun areContentsTheSame(oldItem: Cart, newItem: Cart): Boolean {
             return oldItem == newItem
         }
-    }
-
-    fun getTotalPrice(): Long {
-        var total = 0L
-        for (i in 0 until itemCount) {
-            total += getItem(i).cake.harga.replace(".", "").toLong() * getItem(i).jumlahPesanan
-        }
-        return total
-    }
-
-    private fun formatAndDisplayCurrency(value: String): String {
-        // Tandai apakah angka negatif
-        val isNegative = value.startsWith("-")
-        val cleanValue = if (isNegative) value.substring(1) else value
-
-        // Format ulang angka dengan menambahkan titik setiap 3 angka
-        val stringBuilder = StringBuilder(cleanValue)
-        val length = stringBuilder.length
-        var i = length - 3
-        while (i > 0) {
-            stringBuilder.insert(i, ".")
-            i -= 3
-        }
-
-        // Tambahkan tanda minus kembali jika angka negatif
-        val formattedText = if (isNegative) {
-            stringBuilder.insert(0, "-").toString()
-        } else {
-            stringBuilder.toString()
-        }
-
-        return formattedText
     }
 }

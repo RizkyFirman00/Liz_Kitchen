@@ -11,7 +11,7 @@
         android:icon="@drawable/baseline_shopping_cart_24_white" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_history"
         android:title="Riwayat"
         android:icon="@drawable/baseline_history_24_white" />
 </menu>

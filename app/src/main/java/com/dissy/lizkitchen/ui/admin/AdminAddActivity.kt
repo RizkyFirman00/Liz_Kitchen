@@ -129,14 +129,14 @@ class AdminAddActivity : AppCompatActivity() {
             val stok = binding.etStok.text.toString()
             val gambar = file
             if (gambar != null && namaKue.isNotEmpty() && harga.isNotEmpty() && stok.isNotEmpty()) {
-                uploadImageAndGetUrl(namaKue, harga, stok, gambar)
+                uploadImageAndGetUrl(namaKue, harga, stok.toLong(), gambar)
             } else {
                 Toast.makeText(this, "Data tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun uploadImageAndGetUrl(namaKue: String, harga: String, stok: String, gambar: File) {
+    private fun uploadImageAndGetUrl(namaKue: String, harga: String, stok: Long, gambar: File) {
         binding.apply {
             progressBar2.visibility = View.VISIBLE
             etNamaKue.isEnabled = false

@@ -33,7 +33,7 @@ class HomeAdminAdapter(private val onItemClick: (String) -> Unit) :
             binding.apply {
                 tvCakeName.text = cake.namaKue
                 tvPrice.text = cake.harga
-                tvStok.text = cake.stok
+                tvStok.text = cake.stok.toString()
                 Glide.with(itemView.context)
                     .load(cake.imageUrl)
                     .into(ivCakeBanner)

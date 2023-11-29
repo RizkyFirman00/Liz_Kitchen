@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.databinding.ActivityCakeDetailUserBinding
+import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,6 +23,7 @@ class CakeDetailUserActivity : AppCompatActivity() {
     private var jumlahPesanan = 0
     private var hargaPerPcs = 0
     private var stok = 0
+    private lateinit var imageUrlDb: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -45,9 +47,10 @@ class CakeDetailUserActivity : AppCompatActivity() {
                         val namaKue = snapshot.getString("namaKue")
                         val hargaKue = snapshot.getString("harga")
                         hargaPerPcs = hargaKue?.replace(".", "").toString().toInt()
-                        val stokKue = snapshot.getString("stok")
+                        val stokKue = snapshot.getLong("stok")
                         stok = stokKue?.toInt()!!
                         val imageUrl = snapshot.getString("imageUrl")
+                        imageUrlDb = imageUrl.toString()
                         binding.apply {
                             tvCakeName.text = namaKue
                             tvPriceCake.text = hargaKue.toString()
@@ -99,7 +102,14 @@ class CakeDetailUserActivity : AppCompatActivity() {
                     // Produk belum ada di keranjang, tambahkan produk baru
                     cartRef.set(
                         hashMapOf(
-                            "cake" to cakeId,
+                            "cakeId" to cakeId,
+                            "cake" to Cake(
+                                cakeId ?: "",
+                                binding.tvPriceCake.text.toString(),
+                                imageUrlDb,
+                                binding.tvCakeName.text.toString(),
+                                stok.toLong(),
+                            ),
                             "jumlahPesanan" to jumlahPesanan,
                         )
                     )
