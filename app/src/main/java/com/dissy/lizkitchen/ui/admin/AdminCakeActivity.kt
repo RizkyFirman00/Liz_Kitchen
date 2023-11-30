@@ -6,21 +6,18 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dissy.lizkitchen.R
-import com.dissy.lizkitchen.adapter.HomeAdminAdapter
+import com.dissy.lizkitchen.adapter.HomeAdminCakeAdapter
 import com.dissy.lizkitchen.databinding.ActivityAdminBinding
-import com.dissy.lizkitchen.databinding.ActivityLoginBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.ui.login.LoginActivity
-import com.dissy.lizkitchen.ui.profile.ProfileActivity
 import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class AdminActivity : AppCompatActivity() {
+class AdminCakeActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private val cakesCollection = db.collection("cakes")
-    private lateinit var adminAdapter: HomeAdminAdapter
+    private lateinit var adminAdapter: HomeAdminCakeAdapter
     private val binding by lazy { ActivityAdminBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +39,7 @@ class AdminActivity : AppCompatActivity() {
             }
         }
 
-        adminAdapter = HomeAdminAdapter {
+        adminAdapter = HomeAdminCakeAdapter {
             navigateToDetailDataActivity(it)
         }
         binding.rvAdmin.adapter = adminAdapter

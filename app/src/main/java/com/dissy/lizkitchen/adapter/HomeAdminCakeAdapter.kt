@@ -1,22 +1,20 @@
 package com.dissy.lizkitchen.adapter
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dissy.lizkitchen.databinding.RvAdminBinding
+import com.dissy.lizkitchen.databinding.RvCakeBinding
 import com.dissy.lizkitchen.model.Cake
 
-class HomeAdminAdapter(private val onItemClick: (String) -> Unit) :
-    androidx.recyclerview.widget.ListAdapter<Cake, HomeAdminAdapter.HomeAdminViewHolder>(
+class HomeAdminCakeAdapter(private val onItemClick: (String) -> Unit) :
+    androidx.recyclerview.widget.ListAdapter<Cake, HomeAdminCakeAdapter.HomeAdminViewHolder>(
         DiffCallback()
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdminViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = RvAdminBinding.inflate(inflater, parent, false)
+        val binding = RvCakeBinding.inflate(inflater, parent, false)
         return HomeAdminViewHolder(binding)
     }
 
@@ -26,7 +24,7 @@ class HomeAdminAdapter(private val onItemClick: (String) -> Unit) :
     }
 
     inner class HomeAdminViewHolder(
-        private val binding: RvAdminBinding,
+        private val binding: RvCakeBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cake: Cake, onItemClick: (String) -> Unit) {

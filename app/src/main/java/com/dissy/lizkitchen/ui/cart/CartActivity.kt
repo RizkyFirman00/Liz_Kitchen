@@ -8,9 +8,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.adapter.CartUserAdapter
-import com.dissy.lizkitchen.adapter.HomeAdminAdapter
 import com.dissy.lizkitchen.databinding.ActivityCartBinding
-import com.dissy.lizkitchen.databinding.ActivityDetailCartBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.ui.home.MainActivity

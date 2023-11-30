@@ -14,7 +14,6 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -22,19 +21,12 @@ import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.databinding.ActivityAdminAddBinding
-import com.dissy.lizkitchen.ui.profile.ProfileActivity
-import com.dissy.lizkitchen.utility.Preferences
 import com.dissy.lizkitchen.utility.createCustomTempFile
 import com.dissy.lizkitchen.utility.uriToFile
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import com.google.firebase.storage.storageMetadata
 import java.io.File
-import java.io.FileInputStream
 
 class AdminAddActivity : AppCompatActivity() {
     private val db = Firebase.firestore
@@ -117,7 +109,7 @@ class AdminAddActivity : AppCompatActivity() {
         }
 
         binding.btnToHome.setOnClickListener {
-            Intent(this, AdminActivity::class.java).also {
+            Intent(this, AdminCakeActivity::class.java).also {
                 startActivity(it)
                 finish()
             }
@@ -149,7 +141,7 @@ class AdminAddActivity : AppCompatActivity() {
         val imageRef = storageRef.child("images/${namaKue}")
         val uploadTask = imageRef.putFile(Uri.fromFile(gambar))
 
-        uploadTask.addOnSuccessListener { taskSnapshot ->
+        uploadTask.addOnSuccessListener {
             imageRef.downloadUrl.addOnSuccessListener { uri ->
                 val url = uri.toString()
                 Log.d("AdminAddActivity", "URL: $url")
@@ -183,7 +175,7 @@ class AdminAddActivity : AppCompatActivity() {
                                     "Data berhasil ditambahkan",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                                Intent(this, AdminActivity::class.java).also {
+                                Intent(this, AdminCakeActivity::class.java).also {
                                     startActivity(it)
                                     finish()
                                 }
@@ -197,7 +189,7 @@ class AdminAddActivity : AppCompatActivity() {
                                 ).show()
                             }
                         Toast.makeText(this, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()
-                        Intent(this, AdminActivity::class.java).also {
+                        Intent(this, AdminCakeActivity::class.java).also {
                             startActivity(it)
                             finish()
                         }

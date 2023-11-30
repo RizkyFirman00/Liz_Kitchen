@@ -23,7 +23,6 @@ import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.databinding.ActivityCakeDetailBinding
 import com.dissy.lizkitchen.utility.createCustomTempFile
 import com.dissy.lizkitchen.utility.uriToFile
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -164,7 +163,7 @@ class CakeDetailActivity : AppCompatActivity() {
         }
 
         binding.btnToHome.setOnClickListener {
-            Intent(this, AdminActivity::class.java).also {
+            Intent(this, AdminCakeActivity::class.java).also {
                 startActivity(it)
                 finish()
             }
@@ -195,7 +194,7 @@ class CakeDetailActivity : AppCompatActivity() {
                     .delete()
                     .addOnSuccessListener {
                         Toast.makeText(this, "Data berhasil dihapus", Toast.LENGTH_SHORT).show()
-                        Intent(this, AdminActivity::class.java).also {
+                        Intent(this, AdminCakeActivity::class.java).also {
                             startActivity(it)
                             finish()
                         }
@@ -359,7 +358,7 @@ class CakeDetailActivity : AppCompatActivity() {
             .update(data as Map<String, Any>)
             .addOnSuccessListener {
                 Toast.makeText(this, "Data berhasil diupdate", Toast.LENGTH_SHORT).show()
-                Intent(this, AdminActivity::class.java).also {
+                Intent(this, AdminCakeActivity::class.java).also {
                     startActivity(it)
                     finish()
                 }

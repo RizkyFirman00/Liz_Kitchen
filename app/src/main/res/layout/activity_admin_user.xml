@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.admin.AdminCakeActivity">
+    tools:context=".ui.admin.AdminUserActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBar2"
@@ -80,45 +80,5 @@
             android:background="@color/brown_old"
             android:src="@drawable/baseline_logout_24_whit" />
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_admin"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingHorizontal="15dp"
-        android:paddingTop="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topAppBar2"
-        tools:listitem="@layout/rv_cake" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_addData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/brown_old"
-        android:tint="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/baseline_add_24_white" />
-
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/brown_young"
-        android:indeterminateTintMode="src_atop"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
