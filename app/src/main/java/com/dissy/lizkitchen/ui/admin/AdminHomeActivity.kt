@@ -19,10 +19,7 @@ class AdminHomeActivity : AppCompatActivity() {
         }
 
         binding.btnToUsers.setOnClickListener {
-            Intent(this, AdminUserActivity::class.java).also {
-                startActivity(it)
-                finish()
-            }
+
         }
     }
 }
