@@ -4,21 +4,40 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:elevation="8dp"
+    android:elevation="1dp"
+    android:layout_marginBottom="20dp"
     android:outlineProvider="background"
     app:cardCornerRadius="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="5dp"
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="205dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_orderId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/poppins_light"
+                android:text="Order ID"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@drawable/shape_button_brown_young_border"
             android:paddingHorizontal="25dp"
-            android:paddingTop="15dp">
+            android:paddingVertical="15dp">
 
             <TextView
                 android:id="@+id/tvUsername"
@@ -27,13 +46,12 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Username"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="081383939201"
                 android:textAlignment="center"
@@ -45,6 +63,7 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/tv_orderStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"

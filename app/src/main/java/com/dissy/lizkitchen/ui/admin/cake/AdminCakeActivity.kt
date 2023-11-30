@@ -1,4 +1,4 @@
-package com.dissy.lizkitchen.ui.admin
+package com.dissy.lizkitchen.ui.admin.cake
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.adapter.HomeAdminCakeAdapter
 import com.dissy.lizkitchen.databinding.ActivityAdminBinding
 import com.dissy.lizkitchen.model.Cake
+import com.dissy.lizkitchen.ui.admin.AdminHomeActivity
 import com.dissy.lizkitchen.ui.login.LoginActivity
 import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
@@ -17,7 +18,7 @@ import com.google.firebase.ktx.Firebase
 class AdminCakeActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private val cakesCollection = db.collection("cakes")
-    private lateinit var adminAdapter: HomeAdminCakeAdapter
+    private lateinit var adminCakeAdapter: HomeAdminCakeAdapter
     private val binding by lazy { ActivityAdminBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +40,17 @@ class AdminCakeActivity : AppCompatActivity() {
             }
         }
 
-        adminAdapter = HomeAdminCakeAdapter {
+        binding.btnToHome.setOnClickListener {
+            Intent(this, AdminHomeActivity::class.java).also {
+                startActivity(it)
+                finish()
+            }
+        }
+
+        adminCakeAdapter = HomeAdminCakeAdapter {
             navigateToDetailDataActivity(it)
         }
-        binding.rvAdmin.adapter = adminAdapter
+        binding.rvAdmin.adapter = adminCakeAdapter
         binding.rvAdmin.layoutManager = LinearLayoutManager(this)
         fetchDataAndUpdateRecyclerView()
     }
@@ -54,8 +62,8 @@ class AdminCakeActivity : AppCompatActivity() {
                     val cakeData = document.toObject(Cake::class.java)
                     cakesList.add(cakeData)
                 }
-                adminAdapter.submitList(cakesList)
-                adminAdapter.sortDataByName()
+                adminCakeAdapter.submitList(cakesList)
+                adminCakeAdapter.sortDataByName()
                 Log.d("AdminActivity", "Fetched data: $cakesList")
             }
             .addOnFailureListener { exception ->

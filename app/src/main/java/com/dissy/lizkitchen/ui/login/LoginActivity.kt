@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.dissy.lizkitchen.databinding.ActivityLoginBinding
-import com.dissy.lizkitchen.ui.admin.AdminCakeActivity
+import com.dissy.lizkitchen.model.User
 import com.dissy.lizkitchen.ui.admin.AdminHomeActivity
 import com.dissy.lizkitchen.ui.home.MainActivity
 import com.dissy.lizkitchen.ui.register.RegisterActivity
@@ -25,6 +25,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        Preferences.getUserInfo(this)?.let {
+            Log.d("User Info Login", "$it")
+        }
 
         val usernameCheck = Preferences.getUsername(this)
         if (Preferences.checkUsername(this) && usernameCheck == "admin") {
@@ -88,9 +92,25 @@ class LoginActivity : AppCompatActivity() {
                 val storedPassword = userDoc.getString("password")
                 if (storedPassword == password) {
                     val userId = userDoc.getString("userId")
+                    val username = userDoc.getString("username")
+                    val email = userDoc.getString("email")
+                    val phoneNumber = userDoc.getString("phoneNumber")
+                    val alamat = userDoc.getString("alamat")
+                    Preferences.saveUserInfo(
+                        User(
+                            userId = userId ?: "",
+                            username = username ?: "",
+                            email = email ?: "",
+                            password = password,
+                            phoneNumber = phoneNumber ?: "",
+                            alamat = alamat ?: "Belum diisi"
+                        ), this
+                    )
                     if (userId != null) {
                         Log.d("USER ID LOGIN", userId)
-                        Preferences.saveUsername(username, this)
+                        if (username != null) {
+                            Preferences.saveUsername(username, this)
+                        }
                         Preferences.saveUserId(userId, this)
                     }
                     Pair(true, userId)

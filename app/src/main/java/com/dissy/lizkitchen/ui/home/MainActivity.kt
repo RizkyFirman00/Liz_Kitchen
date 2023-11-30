@@ -11,6 +11,7 @@ import com.dissy.lizkitchen.adapter.HomeUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityMainBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.ui.cart.CartActivity
+import com.dissy.lizkitchen.ui.order.OrderActivity
 import com.dissy.lizkitchen.ui.login.LoginActivity
 import com.dissy.lizkitchen.ui.profile.ProfileActivity
 import com.dissy.lizkitchen.utility.Preferences
@@ -28,6 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         val userId = Preferences.getUserId(this)
         Log.d("ID Home", "$userId")
+
+        Preferences.getUserInfo(this)?.let {
+            Log.d("User Info", "$it")
+        }
 
         userAdapter = HomeUserAdapter {
             navigateToDetailDataActivity(it)
@@ -56,10 +61,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_home -> {
-                    Intent(this, MainActivity::class.java).also {
-                        startActivity(it)
-                        finish()
-                    }
+                    true
                 }
                 R.id.navigation_cart -> {
                     Intent(this, CartActivity::class.java).also {
@@ -67,12 +69,12 @@ class MainActivity : AppCompatActivity() {
                         finish()
                     }
                 }
-//                R.id.navigation_history -> {
-//                    Intent(this, HistoryActivity::class.java).also {
-//                        startActivity(it)
-//                        finish()
-//                    }
-//                }
+                R.id.navigation_history -> {
+                    Intent(this, OrderActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
             }
             true
         }

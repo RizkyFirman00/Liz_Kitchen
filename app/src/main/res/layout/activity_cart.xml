@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_buttonnav_brown"
+        app:itemActiveIndicatorStyle="@style/App_Custom_Indicator"
         app:itemIconSize="40dp"
         app:itemIconTint="@color/white"
         app:itemTextAppearanceActive="@font/poppins_semibold"
@@ -19,7 +20,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:itemActiveIndicatorStyle="@style/App_Custom_Indicator"
         app:menu="@menu/bottom_navigation_menu" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -31,8 +31,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topAppBar2"
-        tools:itemCount="3"
         tools:listitem="@layout/rv_cart" />
+
+    <LinearLayout
+        android:id="@+id/emptyCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topAppBar2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="KERANJANG"
+            android:textAlignment="center"
+            android:textColor="@color/brown_old"
+            android:fontFamily="@font/poppins_black"
+            android:textSize="40sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="KOSONG"
+            android:textAlignment="center"
+            android:textColor="@color/brown_old"
+            android:fontFamily="@font/poppins_black"
+            android:textSize="40sp"/>
+
+    </LinearLayout>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBar2"
@@ -121,6 +151,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="8dp"
+        android:visibility="gone"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="@+id/rvCart"

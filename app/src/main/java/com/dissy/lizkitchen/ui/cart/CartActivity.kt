@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
@@ -11,7 +12,11 @@ import com.dissy.lizkitchen.adapter.CartUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityCartBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
+import com.dissy.lizkitchen.model.User
 import com.dissy.lizkitchen.ui.home.MainActivity
+import com.dissy.lizkitchen.ui.login.LoginActivity
+import com.dissy.lizkitchen.ui.order.OrderActivity
+import com.dissy.lizkitchen.ui.profile.ProfileActivity
 import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -32,6 +37,22 @@ class CartActivity : AppCompatActivity() {
         binding.rvCart.layoutManager = LinearLayoutManager(this)
         fetchDataAndUpdateRecyclerView()
 
+        binding.btnToProfile.setOnClickListener {
+            Intent(this, ProfileActivity::class.java).also {
+                startActivity(it)
+                finish()
+            }
+        }
+
+        binding.btnToLogout.setOnClickListener {
+            Preferences.logout(this)
+            Intent(this, LoginActivity::class.java).also {
+                Toast.makeText(this, "Berhasil Logout", Toast.LENGTH_SHORT).show()
+                startActivity(it)
+                finish()
+            }
+        }
+
         binding.btnCheckout.setOnClickListener {
             if (userId != null) {
                 db.collection("users").document(userId).collection("cart").get()
@@ -40,26 +61,55 @@ class CartActivity : AppCompatActivity() {
                         for (document in result) {
                             val cakeId = document.id
                             val jumlahPesanan = document.get("jumlahPesanan") as Long
-                            val cakeDataMap  = document.get("cake") as HashMap<String, Any>
+                            val cakeDataMap = document.get("cake") as HashMap<String, Any>
 
-                            val harga = cakeDataMap ["harga"] as String
-                            val namaKue = cakeDataMap ["namaKue"] as String
-                            val imageUrl = cakeDataMap ["imageUrl"] as String
-                            val stok = (cakeDataMap ["stok"] as Long)
+                            val harga = cakeDataMap["harga"] as String
+                            val namaKue = cakeDataMap["namaKue"] as String
+                            val imageUrl = cakeDataMap["imageUrl"] as String
+                            val stok = (cakeDataMap["stok"] as Long)
 
                             val cakeData = Cake(cakeId, harga, imageUrl, namaKue, stok)
                             cartList.add(Cart(cakeId, cakeData, jumlahPesanan))
                         }
+                        val userInfo = Preferences.getUserInfo(this)
+                        val user = User(
+                            userId = userId,
+                            username = userInfo?.username ?: "Nama Pengguna",
+                            email = userInfo?.email ?: "Email Pengguna",
+                            phoneNumber = userInfo?.phoneNumber ?: "Nomor Telepon Pengguna",
+                            alamat = userInfo?.alamat ?: "Alamat Pengguna"
+                        )
+
                         val orderId = generateOrderId()
                         val order = hashMapOf(
                             "orderId" to orderId,
                             "cart" to cartList,
                             "status" to "Menunggu Pembayaran",
                             "totalPrice" to totalPrice,
-                            "userId" to userId
+                            "user" to user
                         )
                         Log.d("CartActivity", "Isi Cart : $cartList")
-                        db.collection("users").document(userId).collection("order")
+
+                        // Menyimpan data order ke dalam data users di collection orders
+                        db.collection("users")
+                            .document(userId)
+                            .collection("orders")
+                            .document(orderId)
+                            .set(order)
+                            .addOnSuccessListener {
+                                Log.d("CartActivity", "Order berhasil dibuat")
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("CartActivity", "Error adding order", exception)
+                                Toast.makeText(
+                                    this,
+                                    "Error adding order: ${exception.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                        // Menyimpan data order ke collection Orders
+                        db.collection("orders")
                             .document(orderId)
                             .set(order)
                             .addOnSuccessListener {
@@ -97,17 +147,14 @@ class CartActivity : AppCompatActivity() {
                 }
 
                 R.id.navigation_cart -> {
-                    Intent(this, CartActivity::class.java).also {
+                    true
+                }
+                R.id.navigation_history -> {
+                    Intent(this, OrderActivity::class.java).also {
                         startActivity(it)
                         finish()
                     }
                 }
-//                R.id.navigation_history -> {
-//                    Intent(this, HistoryActivity::class.java).also {
-//                        startActivity(it)
-//                        finish()
-//                    }
-//                }
             }
             true
         }
@@ -154,12 +201,12 @@ class CartActivity : AppCompatActivity() {
                     for (document in result) {
                         val cakeId = document.id
                         val jumlahPesanan = document.get("jumlahPesanan") as Long
-                        val cakeDataMap  = document.get("cake") as HashMap<String, Any>
+                        val cakeDataMap = document.get("cake") as HashMap<String, Any>
 
-                        val harga = cakeDataMap ["harga"] as String
-                        val namaKue = cakeDataMap ["namaKue"] as String
-                        val imageUrl = cakeDataMap ["imageUrl"] as String
-                        val stok = (cakeDataMap ["stok"] as Long)
+                        val harga = cakeDataMap["harga"] as String
+                        val namaKue = cakeDataMap["namaKue"] as String
+                        val imageUrl = cakeDataMap["imageUrl"] as String
+                        val stok = (cakeDataMap["stok"] as Long)
 
                         val cakeData = Cake(cakeId, harga, imageUrl, namaKue, stok)
                         cartList.add(Cart(cakeId, cakeData, jumlahPesanan))
@@ -168,6 +215,13 @@ class CartActivity : AppCompatActivity() {
 
                     binding.tvPriceSum.text = formatAndDisplayCurrency(totalPrice.toString())
                     cartAdapter.submitList(cartList)
+                    if (cartList.isEmpty()) {
+                        binding.emptyCart.visibility = View.VISIBLE
+                        binding.linearLayout1.visibility = View.GONE
+                    } else {
+                        binding.emptyCart.visibility = View.GONE
+                        binding.linearLayout1.visibility = View.VISIBLE
+                    }
                 }
                 .addOnFailureListener { exception ->
                     Log.e("CartActivity", "Error fetching data", exception)

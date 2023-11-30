@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.history.HistoryActivity">
+    tools:context=".ui.order.OrderActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -23,14 +23,13 @@
         app:menu="@menu/bottom_navigation_menu" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvCart"
+        android:id="@+id/rvHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar2"
-        tools:listitem="@layout/rv_cart" />
+        app:layout_constraintTop_toBottomOf="@id/topAppBar2" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBar2"

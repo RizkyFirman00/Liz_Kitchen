@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Users"
+                android:text="Orders User"
                 android:textAlignment="center"
                 android:textSize="20sp" />
         </LinearLayout>
