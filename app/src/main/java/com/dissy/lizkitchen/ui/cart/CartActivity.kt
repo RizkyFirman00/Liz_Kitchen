@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
-import com.dissy.lizkitchen.adapter.CartUserAdapter
+import com.dissy.lizkitchen.adapter.user.CartUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityCartBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
@@ -40,7 +40,6 @@ class CartActivity : AppCompatActivity() {
         binding.btnToProfile.setOnClickListener {
             Intent(this, ProfileActivity::class.java).also {
                 startActivity(it)
-                finish()
             }
         }
 
@@ -121,6 +120,7 @@ class CartActivity : AppCompatActivity() {
                                 clearCart(userId)
 
                                 Intent(this, DetailCartActivity::class.java).also {
+                                    it.putExtra("orderId", orderId)
                                     startActivity(it)
                                     finish()
                                 }
@@ -149,6 +149,7 @@ class CartActivity : AppCompatActivity() {
                 R.id.navigation_cart -> {
                     true
                 }
+
                 R.id.navigation_history -> {
                     Intent(this, OrderActivity::class.java).also {
                         startActivity(it)

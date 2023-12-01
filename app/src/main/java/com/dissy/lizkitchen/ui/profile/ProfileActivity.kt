@@ -30,10 +30,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         binding.btnToHome.setOnClickListener {
-            Intent(this, MainActivity::class.java).also {
-                startActivity(it)
-                finish()
-            }
+            finish()
         }
 
         binding.btnToLogout.setOnClickListener {

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dissy.lizkitchen.adapter.HomeAdminCakeAdapter
+import com.dissy.lizkitchen.adapter.admin.HomeAdminCakeAdapter
 import com.dissy.lizkitchen.databinding.ActivityAdminBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.ui.admin.AdminHomeActivity

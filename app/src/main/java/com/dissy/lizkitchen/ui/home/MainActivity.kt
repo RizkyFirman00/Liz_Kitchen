@@ -7,7 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
-import com.dissy.lizkitchen.adapter.HomeUserAdapter
+import com.dissy.lizkitchen.adapter.user.HomeUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityMainBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.ui.cart.CartActivity
@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         binding.btnToProfile.setOnClickListener {
             Intent(this, ProfileActivity::class.java).also {
                 startActivity(it)
-                finish()
             }
         }
 

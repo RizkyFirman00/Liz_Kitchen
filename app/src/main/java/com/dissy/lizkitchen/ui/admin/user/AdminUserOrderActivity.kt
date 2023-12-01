@@ -4,16 +4,17 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.recyclerview.widget.GridLayoutManager
-import com.dissy.lizkitchen.adapter.HomeAdminUserAdapter
+import com.dissy.lizkitchen.adapter.admin.HomeAdminUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityAdminUserBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.model.Order
 import com.dissy.lizkitchen.model.User
 import com.dissy.lizkitchen.ui.admin.AdminHomeActivity
-import com.dissy.lizkitchen.ui.admin.cake.CakeDetailActivity
 import com.dissy.lizkitchen.ui.login.LoginActivity
+import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -30,11 +31,20 @@ class AdminUserOrderActivity : AppCompatActivity() {
         adminUserAdapter = HomeAdminUserAdapter {
             navigateToDetailDataActivity(it)
         }
+        val spanCount = 2
+        val layoutManager = GridLayoutManager(this, spanCount)
         binding.rvUser.adapter = adminUserAdapter
-        binding.rvUser.layoutManager = GridLayoutManager(this, 2)
+        binding.rvUser.layoutManager = layoutManager
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return 1
+            }
+        }
+
         fetchDataAndUpdateRecyclerView()
 
         binding.btnToLogout.setOnClickListener {
+            Preferences.logout(this)
             Intent(this, LoginActivity::class.java).also {
                 startActivity(it)
                 finish()

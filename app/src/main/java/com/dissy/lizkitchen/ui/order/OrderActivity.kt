@@ -21,7 +21,6 @@ class OrderActivity : AppCompatActivity() {
         binding.btnToProfile.setOnClickListener {
             Intent(this, ProfileActivity::class.java).also {
                 startActivity(it)
-                finish()
             }
         }
 

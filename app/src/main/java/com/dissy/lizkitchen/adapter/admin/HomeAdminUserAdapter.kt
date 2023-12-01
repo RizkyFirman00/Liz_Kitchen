@@ -1,9 +1,10 @@
-package com.dissy.lizkitchen.adapter
+package com.dissy.lizkitchen.adapter.admin
 
 import com.dissy.lizkitchen.model.Order
-import com.dissy.lizkitchen.model.User
 
-class HomeAdminUserAdapter(private val onItemClick: (String) -> Unit) : androidx.recyclerview.widget.ListAdapter<Order, HomeAdminUserAdapter.HomeAdminViewHolder>(DiffCallback()) {
+class HomeAdminUserAdapter(private val onItemClick: (String) -> Unit) : androidx.recyclerview.widget.ListAdapter<Order, HomeAdminUserAdapter.HomeAdminViewHolder>(
+    DiffCallback()
+) {
     override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): HomeAdminViewHolder {
         val inflater = android.view.LayoutInflater.from(parent.context)
         val binding = com.dissy.lizkitchen.databinding.RvUserBinding.inflate(inflater, parent, false)
@@ -18,6 +19,19 @@ class HomeAdminUserAdapter(private val onItemClick: (String) -> Unit) : androidx
     inner class HomeAdminViewHolder(private val binding: com.dissy.lizkitchen.databinding.RvUserBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root) {
 
         fun bind(order: Order, onItemClick: (String) -> Unit) {
+            if (order.status == "Selesai") {
+                binding.tvOrderStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+            } else if (order.status == "Dibatalkan") {
+                binding.tvOrderStatus.setTextColor(android.graphics.Color.parseColor("#D10826"))
+            } else if (order.status == "Menunggu Pembayaran") {
+                binding.tvOrderStatus.setTextColor(android.graphics.Color.parseColor("#D10826"))
+            } else if (order.status == "Sedang Dikirim") {
+                binding.tvOrderStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+            } else if (order.status == "Sedang Diproses") {
+                binding.tvOrderStatus.setTextColor(android.graphics.Color.parseColor("#9C6843"))
+            } else if (order.status == "Sudah Dikonfirmasi") {
+                binding.tvOrderStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+            }
             binding.apply {
                 tvOrderId.text = order.orderId
                 tvOrderStatus.text = order.status

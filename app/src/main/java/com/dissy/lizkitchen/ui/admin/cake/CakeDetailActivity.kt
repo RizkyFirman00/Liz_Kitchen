@@ -32,9 +32,7 @@ class CakeDetailActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private lateinit var photoPath: String
     private val storage = Firebase.storage
-    private val storageRef = storage.reference
     private var file: File? = null
-    private var cakeImage: String? = null
     private val cakeCollection = db.collection("cakes")
     private var isImageChanged = false
     private val binding by lazy { ActivityCakeDetailBinding.inflate(layoutInflater) }
@@ -71,7 +69,7 @@ class CakeDetailActivity : AppCompatActivity() {
                         }
                         val namaKue = snapshot.getString("namaKue")
                         val harga = snapshot.getString("harga")
-                        val stok = snapshot.getString("stok")
+                        val stok = snapshot.getLong("stok").toString()
                         val imageUrl = snapshot.getString("imageUrl")
                         file = File(imageUrl)
                         binding.apply {
