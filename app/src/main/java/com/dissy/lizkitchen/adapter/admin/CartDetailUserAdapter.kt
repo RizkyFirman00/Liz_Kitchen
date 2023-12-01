@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dissy.lizkitchen.databinding.RvOrderBinding
+import com.dissy.lizkitchen.databinding.RvOrderDetailBinding
 import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.model.Order
 
@@ -14,7 +14,7 @@ class CartDetailUserAdapter() :
     ListAdapter<Cart, CartDetailUserAdapter.CartDetailUserViewHolder>(
         DiffCallback()
     ) {
-    inner class CartDetailUserViewHolder(private val binding: RvOrderBinding) :
+    inner class CartDetailUserViewHolder(private val binding: RvOrderDetailBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(cart: Cart) {
             binding.apply {
@@ -32,7 +32,7 @@ class CartDetailUserAdapter() :
         viewType: Int
     ): CartDetailUserAdapter.CartDetailUserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = RvOrderBinding.inflate(inflater, parent, false)
+        val binding = RvOrderDetailBinding.inflate(inflater, parent, false)
         return CartDetailUserViewHolder(binding)
     }
 
