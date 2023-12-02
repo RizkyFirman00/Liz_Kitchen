@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
-import com.dissy.lizkitchen.adapter.user.CartUserAdapter
+import com.dissy.lizkitchen.adapter.user.HomeCartUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityCartBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
@@ -24,7 +24,7 @@ import com.google.firebase.ktx.Firebase
 class CartActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private var totalPrice: Long = 0
-    private lateinit var cartAdapter: CartUserAdapter
+    private lateinit var cartAdapter: HomeCartUserAdapter
     private val binding by lazy { ActivityCartBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +32,7 @@ class CartActivity : AppCompatActivity() {
 
         val userId = Preferences.getUserId(this)
 
-        cartAdapter = CartUserAdapter()
+        cartAdapter = HomeCartUserAdapter()
         binding.rvCart.adapter = cartAdapter
         binding.rvCart.layoutManager = LinearLayoutManager(this)
         fetchDataAndUpdateRecyclerView()

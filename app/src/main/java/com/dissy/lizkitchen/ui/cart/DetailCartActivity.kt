@@ -113,7 +113,32 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
                         .addOnFailureListener { e ->
                             Toast.makeText(
                                 this,
-                                "Pesanan gagal dibuat",
+                                "Pesanan gagal dibuat, $e",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    
+                    db.collection("orders").document(orderId).update(
+                        mapOf(
+                            "metodePengambilan" to metodePengambilan,
+                            "status" to "Menunggu Pembayaran",
+                        )
+                    )
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this,
+                                "Pesanan berhasil dibuat, Silahkan lakukan pembayaran",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            Intent(this, MainActivity::class.java).also {
+                                startActivity(it)
+                                finish()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(
+                                this,
+                                "Pesanan gagal dibuat, $e",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

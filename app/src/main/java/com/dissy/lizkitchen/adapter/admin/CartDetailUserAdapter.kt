@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.databinding.RvOrderDetailBinding
 import com.dissy.lizkitchen.model.Cart
-import com.dissy.lizkitchen.model.Order
 
 class CartDetailUserAdapter() :
     ListAdapter<Cart, CartDetailUserAdapter.CartDetailUserViewHolder>(

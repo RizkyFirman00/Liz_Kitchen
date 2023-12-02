@@ -16,7 +16,7 @@ import com.dissy.lizkitchen.model.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class UserDetailOrderActivity : AppCompatActivity() {
+class AdminUserOrderDetailActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private val cakesCollection = db.collection("orders")
     private lateinit var orderId: String

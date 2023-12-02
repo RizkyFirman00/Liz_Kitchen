@@ -32,7 +32,7 @@
             android:name=".ui.admin.user.AdminUserOrderActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.admin.user.UserDetailOrderActivity"
+            android:name=".ui.admin.user.AdminUserOrderDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ui.admin.AdminHomeActivity"

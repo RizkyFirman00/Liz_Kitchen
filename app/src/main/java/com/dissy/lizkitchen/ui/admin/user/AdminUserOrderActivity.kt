@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dissy.lizkitchen.adapter.admin.HomeAdminUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityAdminUserBinding
@@ -68,7 +67,7 @@ class AdminUserOrderActivity : AppCompatActivity() {
                     Cart(
                         cakeId = map["cakeId"] as? String ?: "",
                         cake = Cake(
-                            documentId = map["cakeId"] as? String ?: "",
+                            documentId = map["documentId"] as? String ?: "",
                             harga = map["harga"] as? String ?: "",
                             imageUrl = map["imageUrl"] as? String ?: "",
                             namaKue = map["namaKue"] as? String ?: "",
@@ -106,7 +105,7 @@ class AdminUserOrderActivity : AppCompatActivity() {
 
 
     private fun navigateToDetailDataActivity(orderId: String) {
-        val intent = Intent(this, UserDetailOrderActivity::class.java)
+        val intent = Intent(this, AdminUserOrderDetailActivity::class.java)
         intent.putExtra("orderId", orderId)
         startActivity(intent)
 

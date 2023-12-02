@@ -8,8 +8,8 @@ import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.databinding.RvCartBinding
 import com.dissy.lizkitchen.model.Cart
 
-class CartUserAdapter :
-    androidx.recyclerview.widget.ListAdapter<Cart, CartUserAdapter.CartUserViewHolder>(
+class HomeCartUserAdapter :
+    androidx.recyclerview.widget.ListAdapter<Cart, HomeCartUserAdapter.CartUserViewHolder>(
         DiffCallback()
     ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartUserViewHolder {
