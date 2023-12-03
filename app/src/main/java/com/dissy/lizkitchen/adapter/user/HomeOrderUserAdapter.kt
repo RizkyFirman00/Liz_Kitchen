@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dissy.lizkitchen.databinding.RvOrderUserBinding
 import com.dissy.lizkitchen.model.Order
 
-class HomeOrderUserAdapter : ListAdapter<Order, HomeOrderUserAdapter.HomeUserViewHolder>(
+class HomeOrderUserAdapter(private val onItemClick: (String) -> Unit) : ListAdapter<Order, HomeOrderUserAdapter.HomeUserViewHolder>(
     DiffCallback()
 ) {
     inner class HomeUserViewHolder(
@@ -47,6 +47,10 @@ class HomeOrderUserAdapter : ListAdapter<Order, HomeOrderUserAdapter.HomeUserVie
                 rvOrderCakeUser.layoutManager = LinearLayoutManager(itemView.context)
 
                 orderCakeAdapter.submitList(order.cart)
+
+                root.setOnClickListener {
+                    onItemClick.invoke(order.orderId)
+                }
             }
         }
     }

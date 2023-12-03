@@ -12,6 +12,7 @@ import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.model.User
 import com.dissy.lizkitchen.ui.home.MainActivity
+import com.dissy.lizkitchen.ui.konfirmasi.ConfirmActivity
 import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -130,7 +131,8 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
                                 "Pesanan berhasil dibuat, Silahkan lakukan pembayaran",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            Intent(this, MainActivity::class.java).also {
+                            Intent(this, ConfirmActivity::class.java).also {
+                                intent.putExtra("orderId", orderId)
                                 startActivity(it)
                                 finish()
                             }

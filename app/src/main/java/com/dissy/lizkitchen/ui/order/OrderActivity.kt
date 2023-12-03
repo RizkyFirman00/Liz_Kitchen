@@ -33,11 +33,6 @@ class OrderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        orderAdapter = HomeOrderUserAdapter()
-        binding.rvOrder.adapter = orderAdapter
-        binding.rvOrder.layoutManager = LinearLayoutManager(this)
-
-
         Preferences.getUserId(this)?.let { userId ->
             db.collection("users").document(userId)
                 .collection("orders").get()
@@ -79,6 +74,7 @@ class OrderActivity : AppCompatActivity() {
                         )
                         orderId = order.orderId
                         Log.d("AdminUserAct", "orderId: $orderId")
+
                         orderList.add(order)
                     }
                     orderAdapter.submitList(orderList)
@@ -86,6 +82,15 @@ class OrderActivity : AppCompatActivity() {
                     Log.d("TAG", "Error getting documents: ", exception)
                 }
         }
+
+        orderAdapter = HomeOrderUserAdapter {
+            Intent(this, OrderDetailActivity::class.java).also { intent ->
+                intent.putExtra("orderId", orderId)
+                startActivity(intent)
+            }
+        }
+        binding.rvOrder.adapter = orderAdapter
+        binding.rvOrder.layoutManager = LinearLayoutManager(this)
 
 
         binding.btnToProfile.setOnClickListener {
