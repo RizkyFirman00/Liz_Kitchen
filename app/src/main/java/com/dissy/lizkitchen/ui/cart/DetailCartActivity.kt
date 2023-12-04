@@ -66,7 +66,7 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
         }
 
         binding.btnToHome.setOnClickListener {
-            Intent(this, MainActivity::class.java).also {
+            Intent(this, CartActivity::class.java).also {
                 startActivity(it)
                 finish()
             }

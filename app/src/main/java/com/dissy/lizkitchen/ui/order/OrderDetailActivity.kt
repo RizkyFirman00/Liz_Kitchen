@@ -113,7 +113,10 @@ class OrderDetailActivity : AppCompatActivity() {
             }
 
         binding.btnToHome.setOnClickListener {
-            finish()
+            Intent(this, OrderActivity::class.java).also {
+                startActivity(it)
+                finish()
+            }
         }
 
         binding.btnConfirm.setOnClickListener {
@@ -142,7 +145,6 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchDataAndUpdateRecyclerView(orderId: String) {
-        Log.d("TAG", "fetchDataAndUpdateRecyclerView: $orderId")
         db.collection("users").document(userId).collection("orders").document(orderId).get()
             .addOnSuccessListener {
                 // masukkan datanya ke dalam recyclerview
