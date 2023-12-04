@@ -19,7 +19,6 @@ import com.google.firebase.ktx.Firebase
 
 class AdminUserOrderActivity : AppCompatActivity() {
     private val db = Firebase.firestore
-    private val orderCollection = db.collection("orders")
     private lateinit var orderId : String
     private lateinit var adminUserAdapter: HomeAdminUserAdapter
     private val binding by lazy { ActivityAdminUserBinding.inflate(layoutInflater) }
@@ -59,7 +58,7 @@ class AdminUserOrderActivity : AppCompatActivity() {
     }
 
     private fun fetchDataAndUpdateRecyclerView() {
-        orderCollection.get().addOnSuccessListener { result ->
+        db.collection("orders").get().addOnSuccessListener { result ->
             val orderList = mutableListOf<Order>()
             for (document in result) {
                 val cartItemsArray = document.get("cart") as? ArrayList<HashMap<String, Any>>

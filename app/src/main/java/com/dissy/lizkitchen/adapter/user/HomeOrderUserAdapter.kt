@@ -23,7 +23,7 @@ class HomeOrderUserAdapter(private val onItemClick: (String) -> Unit) : ListAdap
                 tvStatusPesanan.text = order.status
                 when (order.status) {
                     "Selesai" -> {
-                        binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#FF000"))
+                        binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
                     }
                     "Dibatalkan" -> {
                         binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#D10826"))
@@ -32,7 +32,7 @@ class HomeOrderUserAdapter(private val onItemClick: (String) -> Unit) : ListAdap
                         binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#D10826"))
                     }
                     "Sedang Dikirim", "Sudah Dikonfirmasi" -> {
-                        binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#FF000"))
+                        binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
                     }
                     "Sedang Diproses" -> {
                         binding.tvStatusPesanan.setTextColor(android.graphics.Color.parseColor("#9C6843"))

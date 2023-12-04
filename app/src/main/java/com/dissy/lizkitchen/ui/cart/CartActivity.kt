@@ -175,7 +175,6 @@ class CartActivity : AppCompatActivity(),
                 .update("jumlahPesanan", newQuantity)
                 .addOnSuccessListener {
                     Log.d("CartActivity", "Quantity updated successfully")
-                    fetchDataAndUpdateRecyclerView()
                 }
                 .addOnFailureListener { e ->
                     Log.w("CartActivity", "Error updating quantity", e)

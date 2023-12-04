@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 class AdminUserOrderDetailActivity : AppCompatActivity() {
     private val db = Firebase.firestore
     private lateinit var orderId: String
+    private lateinit var userId: String
     private lateinit var cartDetailUserAdapter: CartDetailUserAdapter
     private val binding by lazy { ActivityUserDetailBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,12 +35,13 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
         fetchDataAndUpdateRecyclerView(orderId)
 
         db.collection("orders").document(orderId).get()
-            .addOnSuccessListener {
-                val cartItemsArray = it.get("cart") as? ArrayList<HashMap<String, Any>>
+            .addOnSuccessListener { orderDocument ->
+                // ambil semua data user
+                val cartItemsArray = orderDocument.get("cart") as? ArrayList<HashMap<String, Any>>
                 val cartItems = cartItemsArray?.map { map ->
                     val cakeMap = map["cake"] as? HashMap<*, *>
                     Cart(
-                        cakeId = cakeMap?.get("documentId") as? String ?: "",
+                        cakeId = map["cakeId"] as? String ?: "",
                         cake = Cake(
                             documentId = cakeMap?.get("documentId") as? String ?: "",
                             harga = cakeMap?.get("harga") as? String ?: "",
@@ -50,13 +52,13 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                         jumlahPesanan = map["jumlahPesanan"] as? Long ?: 0
                     )
                 } ?: listOf()
-                val userInfo = it.get("user") as? HashMap<String, Any>
+                val userInfo = orderDocument.get("user") as? HashMap<String, Any>
                 val order = Order(
                     cart = cartItems,
-                    orderId = it.getString("orderId") ?: "",
-                    status = it.getString("status") ?: "",
-                    totalPrice = it.getLong("totalPrice") ?: 0,
-                    metodePengambilan = it.getString("metodePengambilan") ?: "",
+                    orderId = orderDocument.getString("orderId") ?: "",
+                    status = orderDocument.getString("status") ?: "",
+                    totalPrice = orderDocument.getLong("totalPrice") ?: 0,
+                    metodePengambilan = orderDocument.getString("metodePengambilan") ?: "",
                     user = userInfo?.let {
                         User(
                             userId = it["userId"] as? String ?: "",
@@ -67,8 +69,8 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                         )
                     } ?: User()
                 )
-                // ambil semua data user
-                Log.d("TAG", "Error getting documents: $order")
+                userId = order.user.userId.toString()
+
                 binding.apply {
                     tvOrderId.text = order.orderId
                     tvStatus.text = order.status
@@ -76,29 +78,33 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                         "Selesai" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
                         }
+
                         "Dibatalkan" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#D10826"))
-                            binding.btnConfirm.visibility = GONE
-                            binding.btnCancel.visibility = GONE
+                            btnCancel.visibility = GONE
+                            btnConfirm.visibility = GONE
                         }
+
                         "Menunggu Pembayaran" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#D10826"))
                         }
+
                         "Sedang Dikirim", "Sudah Dikonfirmasi" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
-                            binding.btnCancel.visibility = GONE
+                            btnCancel.visibility = GONE
                         }
+
                         "Sedang Diproses" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#9C6843"))
-                            binding.btnCancel.visibility = GONE
+                            btnCancel.visibility = GONE
                         }
                     }
-
                     tvAlamat.text = order.user.alamat
                     tvOrderId.text = order.orderId
                     val priceSum = formatAndDisplayCurrency(order.totalPrice.toString())
                     tvPriceSum.text = priceSum
                 }
+
             }.addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)
             }
@@ -110,8 +116,13 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
         binding.btnConfirm.setOnClickListener {
             db.collection("orders").document(orderId).update("status", "Sudah Dikonfirmasi")
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Berhasil mengkonfirmasi pesanan", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this, "Berhasil mengkonfirmasi pesanan", Toast.LENGTH_SHORT).show()
+                    cutStock(orderId)
+                    db.collection("users").document(userId).collection("orders").document(orderId)
+                        .update("status", "Sudah Dikonfirmasi")
+                        .addOnSuccessListener {Log.d("TAG", "DocumentSnapshot successfully updated!") }
+                        .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
+                    Toast.makeText(this, "Berhasil mengkonfirmasi pesanan", Toast.LENGTH_SHORT)
+                        .show()
                     Intent(this, AdminUserOrderActivity::class.java).also {
                         startActivity(it)
                         finish()
@@ -189,4 +200,58 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
 
         return formattedText
     }
+
+    private fun cutStock(orderId: String) {
+        db.collection("orders").document(orderId).get()
+            .addOnSuccessListener { orderDocument ->
+                val cartItemsArray = orderDocument.get("cart") as? ArrayList<HashMap<String, Any>>
+                val cartItems = cartItemsArray?.map { map ->
+                    Cart(
+                        cakeId = map["cakeId"] as? String ?: "",
+                        cake = map["cake"] as? Cake ?: Cake(),
+                        jumlahPesanan = map["jumlahPesanan"] as? Long ?: 0
+                    )
+                } ?: listOf()
+                Log.d("CutStock", "cartItems: $cartItems")
+                for (cartItem in cartItems) {
+                    val cakeId = cartItem.cakeId
+                    val jumlahPesanan = cartItem.jumlahPesanan
+                    Log.d("CutStock", "cartItems: $cakeId")
+                    Log.d("CutStock", "cartItems: $jumlahPesanan")
+
+                    // Mendapatkan referensi ke dokumen kue di koleksi "cakes"
+                    val cakeDocRef = db.collection("cakes").document(cakeId)
+
+                    // Mengambil data kue saat ini
+                    cakeDocRef.get().addOnSuccessListener { cakeDocument ->
+                        // Mendapatkan stok kue saat ini
+                        val currentStock = cakeDocument.getLong("stok") ?: 0
+
+                        // Memastikan stok mencukupi untuk dipotong
+                        if (currentStock >= jumlahPesanan) {
+                            // Menghitung sisa stok setelah dipotong
+                            val newStock = currentStock - jumlahPesanan
+
+                            // Memperbarui stok kue di koleksi "cakes"
+                            cakeDocRef.update("stok", newStock)
+                                .addOnSuccessListener {
+                                    Log.d("TAG", "Stok kue berhasil dipotong untuk cakeId: $cakeId")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w("TAG", "Error updating stock for cakeId: $cakeId", e)
+                                }
+                        } else {
+                            Log.e("TAG", "Stok tidak mencukupi untuk cakeId: $cakeId")
+                        }
+                    }.addOnFailureListener { e ->
+                        Log.w("TAG", "Error getting cake document for cakeId: $cakeId", e)
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("TAG", "Error getting documents: ", exception)
+            }
+    }
+
+
 }
