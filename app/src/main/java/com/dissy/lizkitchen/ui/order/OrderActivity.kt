@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
@@ -33,6 +34,7 @@ class OrderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        binding.progressBar2.visibility = android.view.View.VISIBLE
         Preferences.getUserId(this)?.let { userId ->
             db.collection("users").document(userId)
                 .collection("orders").get()
@@ -72,12 +74,18 @@ class OrderActivity : AppCompatActivity() {
                                 )
                             } ?: User()
                         )
+                        Log.d("AdminUserAct", "order: $order")
                         orderId = order.orderId
                         Log.d("AdminUserAct", "orderId: $orderId")
-
                         orderList.add(order)
                     }
                     orderAdapter.submitList(orderList)
+                    binding.progressBar2.visibility = View.GONE
+                    if (orderList.isEmpty()) {
+                        binding.emptyCart.visibility = View.VISIBLE
+                    } else {
+                        binding.emptyCart.visibility = View.GONE
+                    }
                 }.addOnFailureListener { exception ->
                     Log.d("TAG", "Error getting documents: ", exception)
                 }
@@ -85,7 +93,7 @@ class OrderActivity : AppCompatActivity() {
 
         orderAdapter = HomeOrderUserAdapter {
             Intent(this, OrderDetailActivity::class.java).also { intent ->
-                intent.putExtra("orderId", orderId)
+                intent.putExtra("orderId", it)
                 startActivity(intent)
             }
         }

@@ -2,6 +2,7 @@ package com.dissy.lizkitchen.utility
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.model.User
 
 object Preferences {

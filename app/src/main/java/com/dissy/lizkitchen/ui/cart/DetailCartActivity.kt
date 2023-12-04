@@ -82,7 +82,54 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
             metodeAmbilFragment.show(supportFragmentManager, metodeAmbilFragment.tag)
         }
 
+        binding.btnCancel.setOnClickListener {
+            val userId = Preferences.getUserId(this)
+            val orderId = intent.getStringExtra("orderId")
+            if (userId != null && orderId != null) {
+                db.collection("users").document(userId).collection("orders").document(orderId)
+                    .update(
+                        mapOf(
+                            "status" to "Dibatalkan",
+                        )
+                    ).addOnSuccessListener {
+                        Toast.makeText(this, "Pesanan berhasil dibatalkan", Toast.LENGTH_SHORT)
+                            .show()
+                        Intent(this, MainActivity::class.java).also {
+                            startActivity(it)
+                            finish()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            this,
+                            "Pesanan gagal dibatalkan, $e",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                db.collection("orders").document(orderId).update(
+                    mapOf(
+                        "status" to "Dibatalkan",
+                    )
+                ).addOnSuccessListener {
+                    Toast.makeText(this, "Pesanan berhasil dibatalkan", Toast.LENGTH_SHORT).show()
+                    Intent(this, MainActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(
+                            this,
+                            "Pesanan gagal dibatalkan, $e",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+            }
+        }
+
         binding.btnCheckout.setOnClickListener {
+            binding.progressBar2.visibility = android.view.View.VISIBLE
             val metodePengambilan = binding.tvMetodePengambilan.text.toString()
             val alamat = binding.etAlamat.text.toString()
             if (alamat.isEmpty() || alamat.isBlank()) {
@@ -106,10 +153,6 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
                                 "Pesanan berhasil dibuat, Silahkan lakukan pembayaran",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            Intent(this, MainActivity::class.java).also {
-                                startActivity(it)
-                                finish()
-                            }
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(
@@ -118,7 +161,7 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                    
+
                     db.collection("orders").document(orderId).update(
                         mapOf(
                             "metodePengambilan" to metodePengambilan,
@@ -126,16 +169,21 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
                         )
                     )
                         .addOnSuccessListener {
+                            binding.progressBar2.visibility = android.view.View.GONE
+                            Intent(this, ConfirmActivity::class.java).also {
+                                it.putExtra("orderId", orderId)
+                                Log.d(
+                                    "orderId DetailCartActivity",
+                                    "onCreate: $orderId"
+                                )
+                                startActivity(it)
+                                finish()
+                            }
                             Toast.makeText(
                                 this,
                                 "Pesanan berhasil dibuat, Silahkan lakukan pembayaran",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            Intent(this, ConfirmActivity::class.java).also {
-                                intent.putExtra("orderId", orderId)
-                                startActivity(it)
-                                finish()
-                            }
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(

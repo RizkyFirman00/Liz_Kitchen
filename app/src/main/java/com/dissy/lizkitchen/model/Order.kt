@@ -7,7 +7,7 @@ data class Order (
     val orderId: String = "",
     val status: String = "",
     val metodePengambilan: String = "",
-    val tanggalPengambilan: String = "",
+    val tanggalOrder: String = "",
     val totalPrice: Long = 0,
     val user: User = User(),
 )

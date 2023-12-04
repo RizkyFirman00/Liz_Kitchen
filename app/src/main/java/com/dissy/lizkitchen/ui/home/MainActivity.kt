@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         binding.rvUser.adapter = userAdapter
         binding.rvUser.layoutManager = LinearLayoutManager(this)
         fetchDataAndUpdateRecyclerView()
-        hideProgressBar()
 
         binding.btnToProfile.setOnClickListener {
             Intent(this, ProfileActivity::class.java).also {
@@ -79,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun fetchDataAndUpdateRecyclerView() {
-        showProgressBar()
+        binding.progressBar2.visibility = android.view.View.VISIBLE
         cakesCollection.get()
             .addOnSuccessListener { result ->
                 val cakesList = mutableListOf<Cake>()
@@ -90,6 +89,7 @@ class MainActivity : AppCompatActivity() {
                 userAdapter.submitList(cakesList)
                 userAdapter.sortDataByName()
                 Log.d("AdminActivity", "Fetched data: $cakesList")
+                binding.progressBar2.visibility = android.view.View.GONE
             }
             .addOnFailureListener { exception ->
                 Log.e("AdminActivity", "Error fetching data", exception)
@@ -97,13 +97,6 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private fun showProgressBar() {
-        binding.progressBar2.visibility = android.view.View.VISIBLE
-    }
-
-    private fun hideProgressBar() {
-        binding.progressBar2.visibility = android.view.View.GONE
-    }
     private fun navigateToDetailDataActivity(cakeId: String) {
         val intent = Intent(this, CakeDetailUserActivity::class.java)
         intent.putExtra("cakeId", cakeId)

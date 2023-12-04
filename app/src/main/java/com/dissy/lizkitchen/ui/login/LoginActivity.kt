@@ -72,7 +72,7 @@ class LoginActivity : AppCompatActivity() {
     private fun handleLoginResult(result: Pair<Boolean, String?>) {
         if (result.first) {
             val username = Preferences.getUsername(this)
-            Toast.makeText(this, "Login berhasil, $username", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Selamat Datang $username", Toast.LENGTH_SHORT).show()
             Intent(this, MainActivity::class.java).also {
                 startActivity(it)
                 finish()

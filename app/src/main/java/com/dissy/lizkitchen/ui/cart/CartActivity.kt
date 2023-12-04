@@ -21,7 +21,9 @@ import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionListener {
+class CartActivity : AppCompatActivity(),
+    HomeCartUserAdapter.CartInteractionListener,
+    HomeCartUserAdapter.CartDeleteListener {
     private val db = Firebase.firestore
     private var totalPrice: Long = 0
     private lateinit var cartAdapter: HomeCartUserAdapter
@@ -32,7 +34,7 @@ class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionLis
 
         val userId = Preferences.getUserId(this)
 
-        cartAdapter = HomeCartUserAdapter(this)
+        cartAdapter = HomeCartUserAdapter(this, this)
         binding.rvCart.adapter = cartAdapter
         binding.rvCart.layoutManager = LinearLayoutManager(this)
         fetchDataAndUpdateRecyclerView()
@@ -53,6 +55,7 @@ class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionLis
         }
 
         binding.btnCheckout.setOnClickListener {
+            binding.progressBar2.visibility = View.VISIBLE
             if (userId != null) {
                 db.collection("users").document(userId).collection("cart").get()
                     .addOnSuccessListener { result ->
@@ -118,7 +121,7 @@ class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionLis
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 clearCart(userId)
-
+                                binding.progressBar2.visibility = View.GONE
                                 Intent(this, DetailCartActivity::class.java).also {
                                     it.putExtra("orderId", orderId)
                                     startActivity(it)
@@ -161,9 +164,40 @@ class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionLis
         }
     }
 
-    override fun onQuantityChanged(cart: Cart) {
+    override fun onQuantityChanged(cart: Cart, newQuantity: Long) {
         totalPrice = calculateTotalPrice(cartAdapter.currentList)
         binding.tvPriceSum.text = formatAndDisplayCurrency(totalPrice.toString())
+
+        val userId = Preferences.getUserId(this)
+        if (userId != null) {
+            db.collection("users").document(userId)
+                .collection("cart").document(cart.cakeId)
+                .update("jumlahPesanan", newQuantity)
+                .addOnSuccessListener {
+                    Log.d("CartActivity", "Quantity updated successfully")
+                    fetchDataAndUpdateRecyclerView()
+                }
+                .addOnFailureListener { e ->
+                    Log.w("CartActivity", "Error updating quantity", e)
+                }
+        }
+    }
+
+    override fun onCartItemDelete(cart: Cart) {
+        val updatedList = cartAdapter.currentList.toMutableList()
+        val index = updatedList.indexOfFirst {
+            it.cakeId == cart.cakeId
+        }
+
+        if (index != -1) {
+            updatedList.removeAt(index)
+            cartAdapter.submitList(updatedList)
+            db.collection("users").document(Preferences.getUserId(this) ?: "")
+                .collection("cart").document(cart.cakeId).delete()
+            totalPrice = calculateTotalPrice(updatedList)
+            binding.tvPriceSum.text = formatAndDisplayCurrency(totalPrice.toString())
+
+        }
     }
 
     private fun calculateTotalPrice(cartList: List<Cart>): Long {
@@ -207,6 +241,7 @@ class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionLis
     }
 
     private fun fetchDataAndUpdateRecyclerView() {
+        binding.progressBar2.visibility = View.VISIBLE
         val userId = Preferences.getUserId(this)
         if (userId != null) {
             db.collection("users").document(userId).collection("cart").get()
@@ -226,9 +261,9 @@ class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionLis
                         cartList.add(Cart(cakeId, cakeData, jumlahPesanan))
                         totalPrice += harga.replace(".", "").toLong() * jumlahPesanan
                     }
-
                     binding.tvPriceSum.text = formatAndDisplayCurrency(totalPrice.toString())
                     cartAdapter.submitList(cartList)
+                    binding.progressBar2.visibility = View.GONE
                     if (cartList.isEmpty()) {
                         binding.emptyCart.visibility = View.VISIBLE
                         binding.linearLayout1.visibility = View.GONE

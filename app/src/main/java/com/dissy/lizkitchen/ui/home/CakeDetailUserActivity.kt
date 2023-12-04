@@ -69,6 +69,7 @@ class CakeDetailUserActivity : AppCompatActivity() {
         binding.btnToHome.setOnClickListener {
             finish()
         }
+
         binding.btnPlus.setOnClickListener {
             binding.tvJumlahPesanan.text = jumlahPesanan.toString()
             increaseQuantity()
@@ -80,7 +81,15 @@ class CakeDetailUserActivity : AppCompatActivity() {
         }
 
         binding.btnAddCart.setOnClickListener {
+            binding.apply {
+                progressBar2.visibility = View.VISIBLE
+                btnAddCart.isEnabled = false
+            }
             if (jumlahPesanan > stok) {
+                binding.apply {
+                    progressBar2.visibility = View.GONE
+                    btnAddCart.isEnabled = true
+                }
                 Toast.makeText(this, "Stok tidak mencukupi, Stok = $stok", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -94,6 +103,10 @@ class CakeDetailUserActivity : AppCompatActivity() {
                     val newQuantity = existingQuantity + jumlahPesanan
                     cartRef.update("jumlahPesanan", newQuantity)
                         .addOnSuccessListener {
+                            binding.apply {
+                                progressBar2.visibility = View.GONE
+                                btnAddCart.isEnabled = true
+                            }
                             Toast.makeText(this, "Berhasil menambahkan ke keranjang", Toast.LENGTH_SHORT).show()
                             finish()
                         }
@@ -116,6 +129,10 @@ class CakeDetailUserActivity : AppCompatActivity() {
                         )
                     )
                         .addOnSuccessListener {
+                            binding.apply {
+                                progressBar2.visibility = View.GONE
+                                btnAddCart.isEnabled = true
+                            }
                             Toast.makeText(this, "Berhasil menambahkan ke keranjang", Toast.LENGTH_SHORT).show()
                             finish()
                         }

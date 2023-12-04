@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.databinding.ActivityConfirmBinding
 import com.dissy.lizkitchen.model.User
+import com.dissy.lizkitchen.ui.home.MainActivity
 import com.dissy.lizkitchen.utility.Preferences
 import com.dissy.lizkitchen.utility.uriToFile
 import com.google.firebase.Firebase
@@ -35,11 +36,14 @@ class ConfirmActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnToHome.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
 
         val userId = Preferences.getUserId(this)
-        val orderId = intent.getStringExtra("orderId").toString()
+        val orderId = intent.getStringExtra("orderId") ?: ""
+        Log.d("TAG", "onCreate orderID: $orderId")
         db.collection("users").document(userId ?: "").collection("orders").document(orderId)
             .get()
             .addOnSuccessListener {

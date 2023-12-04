@@ -31,8 +31,9 @@ class OrderDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         userId = Preferences.getUserId(this).toString()
-
         orderId = intent.getStringExtra("orderId").toString()
+        Log.d("TAG", "onCreate Detail order $orderId"
+        )
 
         cartDetailUserAdapter = CartDetailUserAdapter()
         binding.rvDetailOrderItem.adapter = cartDetailUserAdapter
@@ -102,7 +103,6 @@ class OrderDetailActivity : AppCompatActivity() {
                             binding.btnCancel.visibility = View.GONE
                         }
                     }
-
                     tvAlamat.text = order.user.alamat
                     tvOrderId.text = order.orderId
                     val priceSum = formatAndDisplayCurrency(order.totalPrice.toString())
@@ -142,7 +142,8 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun fetchDataAndUpdateRecyclerView(orderId: String) {
-        db.collection("orders").document(orderId).get()
+        Log.d("TAG", "fetchDataAndUpdateRecyclerView: $orderId")
+        db.collection("users").document(userId).collection("orders").document(orderId).get()
             .addOnSuccessListener {
                 // masukkan datanya ke dalam recyclerview
                 val cartList = mutableListOf<Cart>()
@@ -152,7 +153,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     Cart(
                         cakeId = map["cakeId"] as? String ?: "",
                         cake = Cake(
-                            documentId = cakeMap?.get("cakeId") as? String ?: "",
+                            documentId = cakeMap?.get("documentId") as? String ?: "",
                             namaKue = cakeMap?.get("namaKue") as? String ?: "",
                             harga = cakeMap?.get("harga") as? String ?: "",
                             stok = cakeMap?.get("stok") as? Long ?: 0,
@@ -162,6 +163,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     )
                 } ?: listOf()
                 cartList.addAll(cartItems)
+                Log.d("TAG", "Cart List Detail Order: $cartList")
                 cartDetailUserAdapter.submitList(cartItems)
             }.addOnFailureListener { exception ->
                 Log.d("TAG", "Error getting documents: ", exception)

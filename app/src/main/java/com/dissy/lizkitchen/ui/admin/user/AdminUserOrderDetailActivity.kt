@@ -35,20 +35,40 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
 
         db.collection("orders").document(orderId).get()
             .addOnSuccessListener {
-                val order = Order(
-                    cart = listOf(),
-                    orderId = it.get("orderId") as? String ?: "",
-                    status = it.get("status") as? String ?: "",
-                    totalPrice = it.get("totalPrice") as? Long ?: 0,
-                    user = User(
-                        userId = it.get("userId") as? String ?: "",
-                        username = it.get("username") as? String ?: "",
-                        phoneNumber = it.get("phoneNumber") as? String ?: "",
-                        email = it.get("email") as? String ?: "",
-                        password = it.get("password") as? String ?: "",
-                        alamat = it.get("alamat") as? String ?: "Belum ada alamat",
+                val cartItemsArray = it.get("cart") as? ArrayList<HashMap<String, Any>>
+                val cartItems = cartItemsArray?.map { map ->
+                    val cakeMap = map["cake"] as? HashMap<*, *>
+                    Cart(
+                        cakeId = cakeMap?.get("documentId") as? String ?: "",
+                        cake = Cake(
+                            documentId = cakeMap?.get("documentId") as? String ?: "",
+                            harga = cakeMap?.get("harga") as? String ?: "",
+                            imageUrl = cakeMap?.get("imageUrl") as? String ?: "",
+                            namaKue = cakeMap?.get("namaKue") as? String ?: "",
+                            stok = (cakeMap?.get("stok") as? Long) ?: 0
+                        ),
+                        jumlahPesanan = map["jumlahPesanan"] as? Long ?: 0
                     )
+                } ?: listOf()
+                val userInfo = it.get("user") as? HashMap<String, Any>
+                val order = Order(
+                    cart = cartItems,
+                    orderId = it.getString("orderId") ?: "",
+                    status = it.getString("status") ?: "",
+                    totalPrice = it.getLong("totalPrice") ?: 0,
+                    metodePengambilan = it.getString("metodePengambilan") ?: "",
+                    user = userInfo?.let {
+                        User(
+                            userId = it["userId"] as? String ?: "",
+                            username = it["username"] as? String ?: "",
+                            email = it["email"] as? String ?: "",
+                            phoneNumber = it["phoneNumber"] as? String ?: "",
+                            alamat = it["alamat"] as? String ?: ""
+                        )
+                    } ?: User()
                 )
+                // ambil semua data user
+                Log.d("TAG", "Error getting documents: $order")
                 binding.apply {
                     tvOrderId.text = order.orderId
                     tvStatus.text = order.status
