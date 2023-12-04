@@ -8,10 +8,14 @@ import com.bumptech.glide.Glide
 import com.dissy.lizkitchen.databinding.RvCartBinding
 import com.dissy.lizkitchen.model.Cart
 
-class HomeCartUserAdapter :
+class HomeCartUserAdapter(private val listener: CartInteractionListener) :
     androidx.recyclerview.widget.ListAdapter<Cart, HomeCartUserAdapter.CartUserViewHolder>(
         DiffCallback()
     ) {
+    private var totalHarga: Long = 0
+    interface CartInteractionListener {
+        fun onQuantityChanged(cart: Cart)
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartUserViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = RvCartBinding.inflate(inflater, parent, false)
@@ -35,6 +39,18 @@ class HomeCartUserAdapter :
                 Glide.with(itemView.context)
                     .load(cart.cake.imageUrl)
                     .into(ivCakeBanner)
+                btnPlus.setOnClickListener {
+                    cart.jumlahPesanan++
+                    tvJmlh.text = cart.jumlahPesanan.toString()
+                    listener.onQuantityChanged(cart)
+                }
+                btnMinus.setOnClickListener {
+                    if (cart.jumlahPesanan > 1) {
+                        cart.jumlahPesanan--
+                        tvJmlh.text = cart.jumlahPesanan.toString()
+                        listener.onQuantityChanged(cart)
+                    }
+                }
             }
         }
     }
@@ -46,5 +62,29 @@ class HomeCartUserAdapter :
         override fun areContentsTheSame(oldItem: Cart, newItem: Cart): Boolean {
             return oldItem == newItem
         }
+    }
+
+    private fun formatAndDisplayCurrency(value: String): String {
+        // Tandai apakah angka negatif
+        val isNegative = value.startsWith("-")
+        val cleanValue = if (isNegative) value.substring(1) else value
+
+        // Format ulang angka dengan menambahkan titik setiap 3 angka
+        val stringBuilder = StringBuilder(cleanValue)
+        val length = stringBuilder.length
+        var i = length - 3
+        while (i > 0) {
+            stringBuilder.insert(i, ".")
+            i -= 3
+        }
+
+        // Tambahkan tanda minus kembali jika angka negatif
+        val formattedText = if (isNegative) {
+            stringBuilder.insert(0, "-").toString()
+        } else {
+            stringBuilder.toString()
+        }
+
+        return formattedText
     }
 }

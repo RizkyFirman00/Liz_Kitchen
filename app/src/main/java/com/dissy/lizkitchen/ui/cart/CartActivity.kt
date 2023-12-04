@@ -21,7 +21,7 @@ import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class CartActivity : AppCompatActivity() {
+class CartActivity : AppCompatActivity(), HomeCartUserAdapter.CartInteractionListener {
     private val db = Firebase.firestore
     private var totalPrice: Long = 0
     private lateinit var cartAdapter: HomeCartUserAdapter
@@ -32,7 +32,7 @@ class CartActivity : AppCompatActivity() {
 
         val userId = Preferences.getUserId(this)
 
-        cartAdapter = HomeCartUserAdapter()
+        cartAdapter = HomeCartUserAdapter(this)
         binding.rvCart.adapter = cartAdapter
         binding.rvCart.layoutManager = LinearLayoutManager(this)
         fetchDataAndUpdateRecyclerView()
@@ -159,6 +159,19 @@ class CartActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    override fun onQuantityChanged(cart: Cart) {
+        totalPrice = calculateTotalPrice(cartAdapter.currentList)
+        binding.tvPriceSum.text = formatAndDisplayCurrency(totalPrice.toString())
+    }
+
+    private fun calculateTotalPrice(cartList: List<Cart>): Long {
+        var total = 0L
+        for (cart in cartList) {
+            total += cart.cake.harga.replace(".", "").toLong() * cart.jumlahPesanan
+        }
+        return total
     }
 
     override fun onBackPressed() {

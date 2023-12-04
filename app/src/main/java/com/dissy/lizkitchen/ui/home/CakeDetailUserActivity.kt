@@ -70,10 +70,12 @@ class CakeDetailUserActivity : AppCompatActivity() {
             finish()
         }
         binding.btnPlus.setOnClickListener {
+            binding.tvJumlahPesanan.text = jumlahPesanan.toString()
             increaseQuantity()
         }
 
         binding.btnMinus.setOnClickListener {
+            binding.tvJumlahPesanan.text = jumlahPesanan.toString()
             decreaseQuantity()
         }
 
@@ -135,8 +137,10 @@ class CakeDetailUserActivity : AppCompatActivity() {
     private fun decreaseQuantity() {
         if (jumlahPesanan > 1) {
             jumlahPesanan--
-            updateQuantityAndPrice()
+            updateTotalPrice()
+
         }
+        updateQuantityAndPrice()
     }
 
     // Fungsi untuk memperbarui tampilan jumlah pesanan dan total harga
