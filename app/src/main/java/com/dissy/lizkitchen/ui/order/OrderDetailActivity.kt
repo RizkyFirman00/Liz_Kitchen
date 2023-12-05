@@ -81,6 +81,8 @@ class OrderDetailActivity : AppCompatActivity() {
                     when (order.status) {
                         "Selesai" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+                            binding.btnConfirm.visibility = View.GONE
+                            binding.btnCancel.visibility = View.GONE
                         }
 
                         "Dibatalkan" -> {
@@ -93,13 +95,22 @@ class OrderDetailActivity : AppCompatActivity() {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#D10826"))
                         }
 
-                        "Sedang Dikirim", "Sudah Dikonfirmasi" -> {
+                        "Sedang Dikirim" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+                            binding.btnCancel.visibility = View.GONE
+                            binding.btnReceive.visibility = View.VISIBLE
+                            btnConfirm.visibility = View.GONE
+                        }
+
+                        "Sudah Dikonfirmasi" -> {
+                            binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+                            binding.btnConfirm.visibility = View.GONE
                             binding.btnCancel.visibility = View.GONE
                         }
 
                         "Sedang Diproses" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#9C6843"))
+                            binding.btnConfirm.visibility = View.GONE
                             binding.btnCancel.visibility = View.GONE
                         }
                     }
@@ -126,6 +137,26 @@ class OrderDetailActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnReceive.setOnClickListener {
+            db.collection("users").document(userId).collection("orders").document(orderId)
+                .update("status", "Selesai")
+                .addOnSuccessListener {
+                    db.collection("orders").document(orderId).update("status", "Selesai")
+                        .addOnSuccessListener {
+                            Log.d("TAG", "Pesanan berhasil diterima")
+                        }.addOnFailureListener {
+                            Toast.makeText(this, "Pesanan gagal diterima", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    Toast.makeText(this, "Pesanan berhasil diterima", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, OrderActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Pesanan gagal diterima", Toast.LENGTH_SHORT).show()
+                }
+        }
+
         binding.btnCancel.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Konfirmasi Pembatalan")
@@ -147,7 +178,6 @@ class OrderDetailActivity : AppCompatActivity() {
     private fun fetchDataAndUpdateRecyclerView(orderId: String) {
         db.collection("users").document(userId).collection("orders").document(orderId).get()
             .addOnSuccessListener {
-                // masukkan datanya ke dalam recyclerview
                 val cartList = mutableListOf<Cart>()
                 val cartItemsArray = it.get("cart") as? ArrayList<HashMap<String, Any>>
                 val cartItems = cartItemsArray?.map { map ->
@@ -176,10 +206,7 @@ class OrderDetailActivity : AppCompatActivity() {
         db.collection("users").document(userId).collection("orders").document(orderId)
             .update("status", "Dibatalkan")
             .addOnSuccessListener {
-                Toast.makeText(this, "Pesanan berhasil dibatalkan", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, OrderActivity::class.java)
-                startActivity(intent)
-                finish()
+                Log.d("cancelOrder", "Pesanan berhasil dibatalkan")
             }.addOnFailureListener {
                 Toast.makeText(this, "Pesanan gagal dibatalkan", Toast.LENGTH_SHORT).show()
             }
@@ -196,11 +223,9 @@ class OrderDetailActivity : AppCompatActivity() {
     }
 
     private fun formatAndDisplayCurrency(value: String): String {
-        // Tandai apakah angka negatif
         val isNegative = value.startsWith("-")
         val cleanValue = if (isNegative) value.substring(1) else value
 
-        // Format ulang angka dengan menambahkan titik setiap 3 angka
         val stringBuilder = StringBuilder(cleanValue)
         val length = stringBuilder.length
         var i = length - 3
@@ -208,8 +233,6 @@ class OrderDetailActivity : AppCompatActivity() {
             stringBuilder.insert(i, ".")
             i -= 3
         }
-
-        // Tambahkan tanda minus kembali jika angka negatif
         val formattedText = if (isNegative) {
             stringBuilder.insert(0, "-").toString()
         } else {

@@ -23,6 +23,8 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.storage
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ConfirmActivity : AppCompatActivity() {
     private val db = Firebase.firestore
@@ -49,6 +51,7 @@ class ConfirmActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 val totalHarga = it.get("totalPrice") as? Long ?: 0
                 val formattedText = formatAndDisplayCurrency(totalHarga.toString())
+
                 val userInfo = it.get("user") as? HashMap<String, Any>
                 userInfo.let {
                     val username = it?.get("username") as? String ?: ""
@@ -90,16 +93,6 @@ class ConfirmActivity : AppCompatActivity() {
             sendIntent.type = "image/*"
             sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             startActivity(sendIntent)
-        }
-    }
-
-    private fun isAppInstalled(packageName: String): Boolean {
-        val pm = packageManager
-        return try {
-            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
-            true
-        } catch (e: PackageManager.NameNotFoundException) {
-            false
         }
     }
 

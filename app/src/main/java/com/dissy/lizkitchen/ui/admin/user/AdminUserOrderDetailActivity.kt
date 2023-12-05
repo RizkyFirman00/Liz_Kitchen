@@ -1,11 +1,14 @@
 package com.dissy.lizkitchen.ui.admin.user
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.adapter.admin.CartDetailUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityUserDetailBinding
@@ -21,7 +24,9 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
     private lateinit var orderId: String
     private lateinit var userId: String
     private lateinit var cartDetailUserAdapter: CartDetailUserAdapter
+    private lateinit var orderStatus: String
     private val binding by lazy { ActivityUserDetailBinding.inflate(layoutInflater) }
+    @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -69,6 +74,7 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                         )
                     } ?: User()
                 )
+                orderStatus = order.status
                 userId = order.user.userId.toString()
 
                 binding.apply {
@@ -77,6 +83,8 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                     when (order.status) {
                         "Selesai" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+                            btnCancel.visibility = GONE
+                            btnConfirm.visibility = GONE
                         }
 
                         "Dibatalkan" -> {
@@ -89,14 +97,34 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#D10826"))
                         }
 
-                        "Sedang Dikirim", "Sudah Dikonfirmasi" -> {
+                        "Sedang Dikirim" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
                             btnCancel.visibility = GONE
+                        }
+
+                        "Sudah Dikonfirmasi" -> {
+                            binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
+                            btnCancel.visibility = GONE
+                            btnConfirm.visibility = GONE
+                            btnProcess.visibility = VISIBLE
                         }
 
                         "Sedang Diproses" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#9C6843"))
                             btnCancel.visibility = GONE
+                            btnConfirm.visibility = GONE
+                            when (order.metodePengambilan) {
+                                "Ambil Sendiri" -> {
+                                    btnShipping.visibility = GONE
+                                    btnReady.visibility = VISIBLE
+                                    btnReady.gravity = 1
+                                }
+                                "Pesan Antar" -> {
+                                    btnShipping.visibility = VISIBLE
+                                    btnReady.visibility = GONE
+                                    btnReady.gravity = 1
+                                }
+                            }
                         }
                     }
                     tvAlamat.text = order.user.alamat
@@ -114,12 +142,23 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
         }
 
         binding.btnConfirm.setOnClickListener {
-            db.collection("orders").document(orderId).update("status", "Sudah Dikonfirmasi")
+            val time = System.currentTimeMillis()
+            val date = java.sql.Date(time)
+            val sdf = java.text.SimpleDateFormat("dd-MM-yyyy")
+            val formattedDate = sdf.format(date)
+            db.collection("orders").document(orderId).update(
+                "tanggalOrder", formattedDate,
+                "status", "Sudah Dikonfirmasi"
+            )
                 .addOnSuccessListener {
+
                     cutStock(orderId)
                     db.collection("users").document(userId).collection("orders").document(orderId)
-                        .update("status", "Sudah Dikonfirmasi")
-                        .addOnSuccessListener {Log.d("TAG", "DocumentSnapshot successfully updated!") }
+                        .update(
+                            "tanggalOrder", formattedDate,
+                            "status", "Sudah Dikonfirmasi"
+                        )
+                        .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully updated!") }
                         .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
                     Toast.makeText(this, "Berhasil mengkonfirmasi pesanan", Toast.LENGTH_SHORT)
                         .show()
@@ -134,20 +173,98 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                 }
         }
 
-        binding.btnCancel.setOnClickListener {
-            db.collection("orders").document(orderId).update("status", "Dibatalkan")
+        binding.btnProcess.setOnClickListener {
+            db.collection("orders").document(orderId).update("status", "Sedang Diproses")
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Berhasil membatalkan pesanan", Toast.LENGTH_SHORT).show()
+                    db.collection("users").document(userId).collection("orders").document(orderId)
+                        .update("status", "Sedang Diproses")
+                        .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully updated!") }
+                        .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
+                    Toast.makeText(this, "Berhasil memproses pesanan", Toast.LENGTH_SHORT).show()
                     Intent(this, AdminUserOrderActivity::class.java).also {
                         startActivity(it)
                         finish()
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Toast.makeText(this, "Gagal membatalkan pesanan", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Gagal memproses pesanan", Toast.LENGTH_SHORT).show()
                     Log.d("TAG", "Error getting documents: ", exception)
                 }
         }
+
+        binding.btnShipping.setOnClickListener {
+            db.collection("orders").document(orderId).update("status", "Sedang Dikirim")
+                .addOnSuccessListener {
+                    db.collection("users").document(userId).collection("orders").document(orderId)
+                        .update("status", "Sedang Dikirim")
+                        .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully updated!") }
+                        .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
+                    Toast.makeText(this, "Berhasil mengirim pesanan", Toast.LENGTH_SHORT).show()
+                    Intent(this, AdminUserOrderActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(this, "Gagal mengirim pesanan", Toast.LENGTH_SHORT).show()
+                    Log.d("TAG", "Error getting documents: ", exception)
+                }
+        }
+
+        binding.btnReady.setOnClickListener {
+            db.collection("orders").document(orderId).update("status", "Sedang Dikirim")
+                .addOnSuccessListener {
+                    db.collection("users").document(userId).collection("orders").document(orderId)
+                        .update("status", "Sedang Dikirim")
+                        .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully updated!") }
+                        .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
+                    Toast.makeText(this, "Berhasil mengirim pesanan", Toast.LENGTH_SHORT).show()
+                    Intent(this, AdminUserOrderActivity::class.java).also {
+                        startActivity(it)
+                        finish()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Toast.makeText(this, "Gagal mengirim pesanan", Toast.LENGTH_SHORT).show()
+                    Log.d("TAG", "Error getting documents: ", exception)
+                }
+        }
+
+        binding.btnCancel.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Konfirmasi Pembatalan")
+            builder.setMessage("Apakah Anda yakin ingin membatalkan pesanan ini?")
+
+            builder.setPositiveButton("Ya") { _, _ ->
+                cancelOrder()
+            }
+
+            builder.setNegativeButton("Tidak") { _, _ ->
+
+            }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+    }
+
+    private fun cancelOrder(){
+        db.collection("orders").document(orderId).update("status", "Dibatalkan")
+            .addOnSuccessListener {
+                db.collection("users").document(userId).collection("orders").document(orderId)
+                    .update("status", "Dibatalkan")
+                    .addOnSuccessListener { Log.d("TAG", "DocumentSnapshot successfully updated!") }
+                    .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
+                Toast.makeText(this, "Berhasil membatalkan pesanan", Toast.LENGTH_SHORT).show()
+                Intent(this, AdminUserOrderActivity::class.java).also {
+                    startActivity(it)
+                    finish()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Gagal membatalkan pesanan", Toast.LENGTH_SHORT).show()
+                Log.d("TAG", "Error getting documents: ", exception)
+            }
     }
 
     private fun fetchDataAndUpdateRecyclerView(orderId: String) {

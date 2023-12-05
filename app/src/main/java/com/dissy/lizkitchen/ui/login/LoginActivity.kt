@@ -84,6 +84,7 @@ class LoginActivity : AppCompatActivity() {
 
     private suspend fun loginUser(username: String, password: String): Pair<Boolean, String?> {
         return try {
+            loadingProgress()
             val userQuery = usersCollection.whereEqualTo("username", username).get().await()
 
             if (!userQuery.isEmpty) {
@@ -107,6 +108,7 @@ class LoginActivity : AppCompatActivity() {
                         ), this
                     )
                     if (userId != null) {
+                        unLoadingProgress()
                         Log.d("USER ID LOGIN", userId)
                         if (username != null) {
                             Preferences.saveUsername(username, this)
@@ -115,13 +117,36 @@ class LoginActivity : AppCompatActivity() {
                     }
                     Pair(true, userId)
                 } else {
+                    unLoadingProgress()
                     Pair(false, null)
                 }
             } else {
+                unLoadingProgress()
                 Pair(false, null)
             }
         } catch (e: Exception) {
+            unLoadingProgress()
             Pair(false, null)
+        }
+    }
+
+    private fun loadingProgress() {
+        binding.apply {
+            progressBar2.visibility = android.view.View.VISIBLE
+            etUsername.isEnabled = false
+            etPassword.isEnabled = false
+            btnLogin.isEnabled = false
+            btnToregister.isEnabled = false
+        }
+    }
+
+    private fun unLoadingProgress() {
+        binding.apply {
+            progressBar2.visibility = android.view.View.GONE
+            etUsername.isEnabled = true
+            etPassword.isEnabled = true
+            btnLogin.isEnabled = true
+            btnToregister.isEnabled = true
         }
     }
 

@@ -44,6 +44,7 @@ class RegisterActivity : AppCompatActivity() {
         password: String,
         alamat: String
     ) {
+        loadingProgress()
         val user = hashMapOf(
             "email" to email,
             "phoneNumber" to phoneNumber,
@@ -57,6 +58,7 @@ class RegisterActivity : AppCompatActivity() {
                 val existingUser = task.result?.documents
 
                 if (existingUser != null && existingUser.isNotEmpty()) {
+                    unLoadingProgress()
                     Toast.makeText(this, "Username sudah dipakai", Toast.LENGTH_SHORT).show()
                 } else {
                     // Menggunakan add untuk membuat dokumen baru dengan ID yang dihasilkan oleh Firestore
@@ -70,6 +72,7 @@ class RegisterActivity : AppCompatActivity() {
                                 usersCollection.document(newUserId!!)
                                     .update("userId", newUserId)
                                     .addOnSuccessListener {
+                                        unLoadingProgress()
                                         Toast.makeText(
                                             this,
                                             "Registrasi berhasil",
@@ -103,6 +106,30 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Error checking existing user", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun loadingProgress() {
+        binding.apply {
+            progressBar2.visibility = android.view.View.VISIBLE
+            etEmail.isEnabled = false
+            etNotelp.isEnabled = false
+            etUsername.isEnabled = false
+            etPassword.isEnabled = false
+            btnRegister.isEnabled = false
+            btnTologin.isEnabled = false
+        }
+    }
+
+    private fun unLoadingProgress() {
+        binding.apply {
+            progressBar2.visibility = android.view.View.GONE
+            etEmail.isEnabled = true
+            etNotelp.isEnabled = true
+            etUsername.isEnabled = true
+            etPassword.isEnabled = true
+            btnRegister.isEnabled = true
+            btnTologin.isEnabled = true
         }
     }
 }

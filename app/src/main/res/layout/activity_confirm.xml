@@ -47,15 +47,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
         android:text="Pembayaran Pesanan"
         android:textAlignment="center"
-        android:fontFamily="@font/poppins_semibold"
-        android:textSize="16sp"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/topAppBar2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/topAppBar2"
-        app:layout_constraintBottom_toBottomOf="@id/topAppBar2"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/topAppBar2" />
 
     <TextView
         android:id="@+id/textView2"
@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_semibold"
-        android:text="ORDER ID : 1234567890"
+        tools:text="ORDER ID : 1234567890"
         android:textAlignment="center"
         android:textColor="@color/brown_young"
         android:textSize="18sp"
@@ -87,12 +87,11 @@
         android:id="@+id/iv_buktiBayar"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_button_brown_bordertransparent"
         android:clickable="true"
         android:scaleType="centerCrop"
         android:src="@drawable/upload_bukti_pembayaran"
-
-        android:background="@drawable/shape_button_brown_bordertransparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_orderId" />
@@ -148,7 +147,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="300.000"
+                tools:text="300.000"
                 android:textAlignment="center"
                 android:textColor="@color/brown_old"
                 android:textSize="18sp" />
@@ -163,8 +162,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="25dp"
         android:background="@drawable/shape_button_green"
-        android:text="Kirim Konfirmasi Pembayaran"
         android:fontFamily="@font/poppins_semibold"
+        android:text="Kirim Konfirmasi Pembayaran"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"

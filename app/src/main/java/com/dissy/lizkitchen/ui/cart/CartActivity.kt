@@ -1,6 +1,7 @@
 package com.dissy.lizkitchen.ui.cart
 
 import android.content.Intent
+import android.icu.util.TimeZone.SystemTimeZoneType
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -83,6 +84,11 @@ class CartActivity : AppCompatActivity(),
                         )
 
                         val orderId = generateOrderId()
+                        val currentTime = System.currentTimeMillis()
+                        val timeZone = java.util.TimeZone.getTimeZone("Asia/Jakarta")
+                        val calendar = java.util.Calendar.getInstance(timeZone)
+                        calendar.timeInMillis = currentTime
+
                         val order = hashMapOf(
                             "orderId" to orderId,
                             "cart" to cartList,

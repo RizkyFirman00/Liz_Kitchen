@@ -140,19 +140,21 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
             } else {
                 val userId = Preferences.getUserId(this)
                 if (userId != null && orderId != null) {
+                    db.collection("users").document(userId).update(
+                        mapOf(
+                            "alamat" to alamat,
+                        )
+                    )
                     db.collection("users").document(userId).collection("orders").document(orderId)
                         .update(
                             mapOf(
+                                "user.alamat" to alamat,
                                 "metodePengambilan" to metodePengambilan,
                                 "status" to "Menunggu Pembayaran",
                             )
                         )
                         .addOnSuccessListener {
-                            Toast.makeText(
-                                this,
-                                "Pesanan berhasil dibuat, Silahkan lakukan pembayaran",
-                                Toast.LENGTH_SHORT
-                            ).show()
+
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(
@@ -164,6 +166,7 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
 
                     db.collection("orders").document(orderId).update(
                         mapOf(
+                            "user.alamat" to alamat,
                             "metodePengambilan" to metodePengambilan,
                             "status" to "Menunggu Pembayaran",
                         )
