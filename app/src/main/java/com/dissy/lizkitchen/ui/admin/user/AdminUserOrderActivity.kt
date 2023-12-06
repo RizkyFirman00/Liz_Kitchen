@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dissy.lizkitchen.adapter.admin.HomeAdminUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityAdminUserBinding
@@ -19,8 +20,9 @@ import com.google.firebase.ktx.Firebase
 
 class AdminUserOrderActivity : AppCompatActivity() {
     private val db = Firebase.firestore
-    private lateinit var orderId : String
+    private lateinit var orderId: String
     private lateinit var adminUserAdapter: HomeAdminUserAdapter
+    private var orderList = mutableListOf<Order>()
     private val binding by lazy { ActivityAdminUserBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,21 @@ class AdminUserOrderActivity : AppCompatActivity() {
 
         fetchDataAndUpdateRecyclerView()
 
+        binding.searhView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null && newText.isNotEmpty()) {
+                    adminUserAdapter.filter.filter(newText)
+                } else {
+                    adminUserAdapter.submitList(orderList)
+                }
+                return true
+            }
+        })
+
         binding.btnToLogout.setOnClickListener {
             Preferences.logout(this)
             Intent(this, LoginActivity::class.java).also {
@@ -59,7 +76,6 @@ class AdminUserOrderActivity : AppCompatActivity() {
 
     private fun fetchDataAndUpdateRecyclerView() {
         db.collection("orders").get().addOnSuccessListener { result ->
-            val orderList = mutableListOf<Order>()
             for (document in result) {
                 val cartItemsArray = document.get("cart") as? ArrayList<HashMap<String, Any>>
                 val cartItems = cartItemsArray?.map { map ->

@@ -134,9 +134,11 @@ class DetailCartActivity : AppCompatActivity(), MetodeAmbilFragment.MetodePengam
             val alamat = binding.etAlamat.text.toString()
             if (alamat.isEmpty() || alamat.isBlank()) {
                 Toast.makeText(this, "Alamat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                binding.progressBar2.visibility = android.view.View.GONE
             } else if (metodePengambilan.isEmpty() || metodePengambilan == "Pilih Metode Pengambilan") {
                 Toast.makeText(this, "Silahkan pilih metode pengambilan", Toast.LENGTH_SHORT)
                     .show()
+                binding.progressBar2.visibility = android.view.View.GONE
             } else {
                 val userId = Preferences.getUserId(this)
                 if (userId != null && orderId != null) {
