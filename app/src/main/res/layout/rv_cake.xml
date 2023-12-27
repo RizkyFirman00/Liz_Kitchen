@@ -96,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/linearLayout2"
             android:gravity="center_vertical"

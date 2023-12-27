@@ -31,6 +31,7 @@ class AdminUserOrderActivity : AppCompatActivity() {
         adminUserAdapter = HomeAdminUserAdapter {
             navigateToDetailDataActivity(it)
         }
+
         val spanCount = 2
         val layoutManager = GridLayoutManager(this, spanCount)
         binding.rvUser.adapter = adminUserAdapter

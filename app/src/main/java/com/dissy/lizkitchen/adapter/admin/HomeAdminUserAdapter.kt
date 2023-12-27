@@ -1,5 +1,6 @@
 package com.dissy.lizkitchen.adapter.admin
 
+import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.ListAdapter
@@ -20,7 +21,7 @@ class HomeAdminUserAdapter(private val onItemClick: (String) -> Unit) :
     }
 
     override fun onCreateViewHolder(
-        parent: android.view.ViewGroup,
+        parent: ViewGroup,
         viewType: Int
     ): HomeAdminViewHolder {
         val inflater = android.view.LayoutInflater.from(parent.context)
@@ -84,7 +85,7 @@ class HomeAdminUserAdapter(private val onItemClick: (String) -> Unit) :
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val filteredList: MutableList<Order> = ArrayList()
 
-                if (constraint == null || constraint.isEmpty()) {
+                if (constraint.isNullOrEmpty()) {
                     filteredList.addAll(orderListFull)
                 } else {
                     val filterPattern = constraint.toString().trim()

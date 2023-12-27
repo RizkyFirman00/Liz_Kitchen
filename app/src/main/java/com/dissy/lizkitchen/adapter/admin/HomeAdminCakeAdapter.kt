@@ -2,6 +2,8 @@ package com.dissy.lizkitchen.adapter.admin
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +14,16 @@ import com.dissy.lizkitchen.model.Cake
 class HomeAdminCakeAdapter(private val onItemClick: (String) -> Unit) :
     ListAdapter<Cake, HomeAdminCakeAdapter.HomeAdminViewHolder>(
         DiffCallback()
-    ) {
+    ), Filterable {
+
+    private var originalCakeList: List<Cake> = ArrayList()
+    private var filteredCakeList: List<Cake> = ArrayList()
+
+    init {
+        originalCakeList = currentList
+        filteredCakeList = originalCakeList
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdminViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = RvCakeBinding.inflate(inflater, parent, false)
@@ -22,6 +33,12 @@ class HomeAdminCakeAdapter(private val onItemClick: (String) -> Unit) :
     override fun onBindViewHolder(holder: HomeAdminViewHolder, position: Int) {
         val indekos = getItem(position)
         holder.bind(indekos, onItemClick)
+    }
+
+    override fun submitList(list: List<Cake>?) {
+        super.submitList(list)
+        originalCakeList = list ?: emptyList()
+        filteredCakeList = originalCakeList
     }
 
     inner class HomeAdminViewHolder(
@@ -54,6 +71,33 @@ class HomeAdminCakeAdapter(private val onItemClick: (String) -> Unit) :
 
         override fun areContentsTheSame(oldItem: Cake, newItem: Cake): Boolean {
             return oldItem == newItem
+        }
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val filterPattern = constraint.toString().trim().toLowerCase()
+                val filteredList: List<Cake> = if (constraint.isNullOrEmpty()) {
+                    originalCakeList
+                } else {
+                    originalCakeList.filter { cake ->
+                        cake.namaKue.toLowerCase().contains(filterPattern) ||
+                                cake.documentId.toLowerCase().contains(filterPattern)
+                    }
+                }
+
+                val results = FilterResults()
+                results.values = filteredList
+
+                return results
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredCakeList = results?.values as List<Cake>
+                submitList(filteredCakeList)
+            }
         }
     }
 }

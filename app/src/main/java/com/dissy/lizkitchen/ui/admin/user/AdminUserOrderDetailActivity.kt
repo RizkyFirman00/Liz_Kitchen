@@ -63,6 +63,7 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                     orderId = orderDocument.getString("orderId") ?: "",
                     status = orderDocument.getString("status") ?: "",
                     totalPrice = orderDocument.getLong("totalPrice") ?: 0,
+                    tanggalOrder = orderDocument.getString("tanggalOrder") ?: "",
                     metodePengambilan = orderDocument.getString("metodePengambilan") ?: "",
                     user = userInfo?.let {
                         User(
@@ -80,6 +81,8 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                 binding.apply {
                     tvOrderId.text = order.orderId
                     tvStatus.text = order.status
+                    tvOrderDate.text = order.tanggalOrder
+                    tvMetodePengambilan.text = order.metodePengambilan
                     when (order.status) {
                         "Selesai" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
