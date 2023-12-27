@@ -3,12 +3,14 @@ package com.dissy.lizkitchen.ui.order
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.print.PrintAttributes
+import android.print.PrintManager
 import android.util.Log
 import android.view.View
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.adapter.admin.CartDetailUserAdapter
 import com.dissy.lizkitchen.databinding.ActivityOrderDetailBinding
 import com.dissy.lizkitchen.model.Cake
@@ -25,6 +27,7 @@ class OrderDetailActivity : AppCompatActivity() {
     private lateinit var userId: String
     private lateinit var orderId: String
     private lateinit var cartDetailUserAdapter: CartDetailUserAdapter
+    private lateinit var order: Order
     private val binding by lazy { ActivityOrderDetailBinding.inflate(layoutInflater) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,12 +61,13 @@ class OrderDetailActivity : AppCompatActivity() {
                     )
                 } ?: listOf()
                 val userInfo = it.get("user") as? HashMap<String, Any>
-                val order = Order(
+                var order = Order(
                     cart = cartItems,
                     orderId = it.getString("orderId") ?: "",
                     status = it.getString("status") ?: "",
                     totalPrice = it.getLong("totalPrice") ?: 0,
                     metodePengambilan = it.getString("metodePengambilan") ?: "",
+                    tanggalOrder = it.getString("tanggalOrder") ?: "",
                     user = userInfo?.let {
                         User(
                             userId = it["userId"] as? String ?: "",
@@ -75,9 +79,23 @@ class OrderDetailActivity : AppCompatActivity() {
                     } ?: User()
                 )
                 Log.d("TAG", "Error getting documents: $order")
+
                 binding.apply {
                     tvOrderId.text = order.orderId
                     tvStatus.text = order.status
+                    binding.btnToPrint.setOnClickListener {
+                        val webView = WebView(this@OrderDetailActivity)
+                        webView.loadDataWithBaseURL(null, generateOrderHtml(order = order), "text/HTML", "UTF-8", null)
+
+                        val printManager = getSystemService(PRINT_SERVICE) as PrintManager
+                        val printAdapter = webView.createPrintDocumentAdapter("Order")
+
+                        val printJob = printManager.print(
+                            "OrderDocument",
+                            printAdapter,
+                            PrintAttributes.Builder().build()
+                        )
+                    }
                     when (order.status) {
                         "Selesai" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
@@ -116,6 +134,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     }
                     tvAlamat.text = order.user.alamat
                     tvOrderId.text = order.orderId
+                    tvOrderDate.text = order.tanggalOrder
                     val priceSum = formatAndDisplayCurrency(order.totalPrice.toString())
                     tvPriceSum.text = priceSum
                 }
@@ -202,6 +221,98 @@ class OrderDetailActivity : AppCompatActivity() {
             }
     }
 
+    private fun generateOrderHtml(order: Order): String {
+        val orderHtml = """
+        <html>
+            <head>
+                <title>Order Detail</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                    }
+                    h1 {
+                        color: #333333;
+                    }
+                    p {
+                        margin-bottom: 10px;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        border: 1px solid #dddddd;
+                        text-align: left;
+                        padding: 8px;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Order Detail</h1>                
+                <p><strong>Order ID :</strong> ${order.orderId}</p>
+                <p><strong>Status :</strong> ${order.status}</p>
+                <p><strong>Metode Pemesanan :</strong> ${order.metodePengambilan}</p>
+                <p><strong>Tanggal Order :</strong> ${order.tanggalOrder}</p>
+
+                <br>
+                <h2>Pemesan</h2>
+                <p><strong>Username :</strong> ${order.user.username}</p>
+                <p><strong>Nomor Telepon Pemesan :</strong> ${order.user.phoneNumber}</p>
+                <p><strong>Alamat Pemesan :</strong> ${order.user.alamat}</p>
+                
+                <br>
+                <h2>Kue Dipesan</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cake Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${generateCartItemsHtml(order.cart)}
+                    </tbody>
+                </table>
+
+                <br>
+                <h2>Harga Total</h2>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Total Price:</td>
+                            <td>${formatAndDisplayCurrency(order.totalPrice.toString())}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <style>
+                    /* Add custom styles here */
+                </style>
+            </body>
+        </html>
+    """.trimIndent()
+
+        return orderHtml
+    }
+
+    private fun generateCartItemsHtml(cart: List<Cart>): String {
+        val cartItemsHtml = StringBuilder()
+        for (item in cart) {
+            cartItemsHtml.append("<tr>")
+                .append("<td>${item.cake.namaKue}</td>")
+                .append("<td>${item.jumlahPesanan}</td>")
+                .append("<td>${formatAndDisplayCurrency(item.cake.harga)}</td>")
+                .append("</tr>")
+        }
+        return cartItemsHtml.toString()
+    }
+
     private fun cancelOrder() {
         db.collection("users").document(userId).collection("orders").document(orderId)
             .update("status", "Dibatalkan")
@@ -239,6 +350,6 @@ class OrderDetailActivity : AppCompatActivity() {
             stringBuilder.toString()
         }
 
-        return formattedText
+        return "Rp. $formattedText"
     }
 }

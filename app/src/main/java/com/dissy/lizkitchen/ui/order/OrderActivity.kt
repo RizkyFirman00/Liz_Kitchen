@@ -9,10 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dissy.lizkitchen.R
 import com.dissy.lizkitchen.adapter.user.HomeOrderUserAdapter
-import com.dissy.lizkitchen.adapter.user.HomeOrderUserCakeAdapter
 import com.dissy.lizkitchen.databinding.ActivityHistoryBinding
-import com.dissy.lizkitchen.databinding.RvOrderCakeUserBinding
-import com.dissy.lizkitchen.databinding.RvOrderUserBinding
 import com.dissy.lizkitchen.model.Cake
 import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.model.Order

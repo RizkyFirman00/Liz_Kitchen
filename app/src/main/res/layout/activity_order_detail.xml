@@ -27,7 +27,7 @@
                 android:elevation="0dp" />
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,24 +42,31 @@
                 android:id="@+id/btn_toHome"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true"
                 android:background="@color/brown_old"
                 android:src="@drawable/baseline_arrow_back_24_white" />
 
-        </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Detail Pesanan"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="16sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Detail Pesanan"
-            android:textAlignment="center"
-            android:fontFamily="@font/poppins_semibold"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/topAppBar2"
-            app:layout_constraintBottom_toBottomOf="@id/topAppBar2"/>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_toPrint"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:background="@color/brown_old"
+                android:src="@drawable/baseline_print_24" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tv_status"
@@ -108,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_light"
-                android:text="Alamat Penerima"
+                tools:text="Alamat Penerima"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -163,7 +170,6 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/frameLayout4">
@@ -189,7 +195,31 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="ORDER-1701361239593"
+                    tools:text="ORDER-1701361239593"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="Tanggal Pemesanan"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_orderDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:fontFamily="@font/poppins_semibold"
+                    tools:text="10 Des 2023"
                     android:textSize="14sp" />
             </RelativeLayout>
 
@@ -213,7 +243,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:fontFamily="@font/poppins_semibold"
-                    android:text="Ambil Sendiri"
+                    tools:text="Ambil Sendiri"
                     android:textSize="14sp" />
             </RelativeLayout>
 
@@ -250,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
-                        android:text="230.000"
+                        tools:text="230.000"
                         android:textSize="14sp" />
 
                 </LinearLayout>

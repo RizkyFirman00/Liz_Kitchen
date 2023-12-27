@@ -31,7 +31,8 @@
         tools:listitem="@layout/rv_order_user"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topAppBar2" />
+        app:layout_constraintTop_toBottomOf="@id/topAppBar2"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBar2"
