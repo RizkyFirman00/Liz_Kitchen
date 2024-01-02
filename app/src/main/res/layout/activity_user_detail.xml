@@ -36,7 +36,8 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/topAppBar2"
             app:layout_constraintStart_toStartOf="@id/topAppBar2"
-            app:layout_constraintTop_toTopOf="@id/topAppBar2">
+            app:layout_constraintTop_toTopOf="@id/topAppBar2"
+            android:focusable="true">
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_toHome"
@@ -48,7 +49,7 @@
                 android:src="@drawable/baseline_arrow_back_24_white" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
@@ -59,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_light"
                     android:text="Liz"
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="13sp" />
 
@@ -68,17 +69,18 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_bold"
                     android:text="Kitchen"
-                    android:textAlignment="textEnd"
+                    android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="43dp"
-                android:layout_height="43dp"
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_toPrint"
                 android:layout_gravity="center"
-                android:layout_weight="0"
-                android:src="@drawable/logo" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@color/brown_old"
+                android:src="@drawable/baseline_print_24" />
 
         </LinearLayout>
 
@@ -282,13 +284,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="Rp. "
-                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvPriceSum"

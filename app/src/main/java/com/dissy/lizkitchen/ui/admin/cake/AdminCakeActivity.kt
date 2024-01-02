@@ -50,6 +50,13 @@ class AdminCakeActivity : AppCompatActivity() {
             }
         }
 
+        adminCakeAdapter = HomeAdminCakeAdapter {
+            navigateToDetailDataActivity(it)
+        }
+        binding.rvAdmin.adapter = adminCakeAdapter
+        binding.rvAdmin.layoutManager = LinearLayoutManager(this)
+        fetchDataAndUpdateRecyclerView()
+
         binding.searhView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -64,26 +71,18 @@ class AdminCakeActivity : AppCompatActivity() {
                 return true
             }
         })
-
-        adminCakeAdapter = HomeAdminCakeAdapter {
-            navigateToDetailDataActivity(it)
-        }
-        binding.rvAdmin.adapter = adminCakeAdapter
-        binding.rvAdmin.layoutManager = LinearLayoutManager(this)
-        fetchDataAndUpdateRecyclerView()
     }
 
     private fun fetchDataAndUpdateRecyclerView() {
         cakesCollection.get()
             .addOnSuccessListener { result ->
-                val cakesList = mutableListOf<Cake>()
                 for (document in result) {
                     val cakeData = document.toObject(Cake::class.java)
-                    cakesList.add(cakeData)
+                    cakeList.add(cakeData)
                 }
-                adminCakeAdapter.submitList(cakesList)
+                adminCakeAdapter.submitList(cakeList)
                 adminCakeAdapter.sortDataByName()
-                Log.d("AdminActivity", "Fetched data: $cakesList")
+                Log.d("AdminActivity", "Fetched data: $cakeList")
             }
             .addOnFailureListener { exception ->
                 Log.e("AdminActivity", "Error fetching data", exception)
