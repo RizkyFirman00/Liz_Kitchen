@@ -29,6 +29,9 @@
         android:theme="@style/Theme.LizKitchen"
         tools:targetApi="31">
         <activity
+            android:name=".ui.admin.report.ReportActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.konfirmasi.ConfirmActivity"
             android:exported="false" />
         <activity

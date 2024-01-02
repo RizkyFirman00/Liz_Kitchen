@@ -99,7 +99,6 @@
         android:background="@drawable/login_register_box"
         android:elevation="8dp"
         android:queryHint="Cari Order ID"
-        app:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topAppBar2" />
@@ -108,13 +107,12 @@
         android:id="@+id/rv_admin"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="15dp"
         android:paddingHorizontal="15dp"
         android:paddingTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searhView"
+        app:layout_constraintTop_toBottomOf="@id/searhView"
         tools:listitem="@layout/rv_cake" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
