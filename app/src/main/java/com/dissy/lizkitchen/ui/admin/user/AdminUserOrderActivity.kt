@@ -13,6 +13,7 @@ import com.dissy.lizkitchen.model.Cart
 import com.dissy.lizkitchen.model.Order
 import com.dissy.lizkitchen.model.User
 import com.dissy.lizkitchen.ui.admin.AdminHomeActivity
+import com.dissy.lizkitchen.ui.admin.report.ReportActivity
 import com.dissy.lizkitchen.ui.login.LoginActivity
 import com.dissy.lizkitchen.utility.Preferences
 import com.google.firebase.firestore.ktx.firestore
@@ -38,7 +39,7 @@ class AdminUserOrderActivity : AppCompatActivity() {
         binding.rvUser.layoutManager = layoutManager
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return 1
+                return spanCount / 2
             }
         }
 
@@ -58,6 +59,13 @@ class AdminUserOrderActivity : AppCompatActivity() {
                 return true
             }
         })
+
+        binding.btnToMutasi.setOnClickListener {
+            Intent(this, ReportActivity::class.java).also {
+                startActivity(it)
+                finish()
+            }
+        }
 
         binding.btnToLogout.setOnClickListener {
             Preferences.logout(this)

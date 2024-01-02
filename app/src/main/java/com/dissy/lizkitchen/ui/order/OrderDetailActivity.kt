@@ -117,7 +117,7 @@ class OrderDetailActivity : AppCompatActivity() {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
                             binding.btnCancel.visibility = View.GONE
                             binding.btnReceive.visibility = View.VISIBLE
-                            btnConfirm.visibility = View.GONE
+                            binding.btnConfirm.visibility = View.GONE
                         }
 
                         "Sudah Dikonfirmasi" -> {
@@ -135,6 +135,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     tvAlamat.text = order.user.alamat
                     tvOrderId.text = order.orderId
                     tvOrderDate.text = order.tanggalOrder
+                    tvMetodePengambilan.text = order.metodePengambilan
                     val priceSum = formatAndDisplayCurrency(order.totalPrice.toString())
                     tvPriceSum.text = priceSum
                 }

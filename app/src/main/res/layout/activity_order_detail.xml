@@ -242,6 +242,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:textAlignment="textEnd"
                     android:fontFamily="@font/poppins_semibold"
                     tools:text="Ambil Sendiri"
                     android:textSize="14sp" />
@@ -267,13 +268,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="Rp. "
-                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvPriceSum"
@@ -333,7 +327,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/shape_button_green"
                 android:visibility="gone"
-                android:text="Dikirim"
+                android:text="Diterima"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
 

@@ -75,24 +75,25 @@ class ConfirmActivity : AppCompatActivity() {
         binding.btnKonfirmasi.setOnClickListener {
             val orderUsername = binding.tvOrderUsername.text.toString()
             val orderTotal = binding.tvOrderTotal.text.toString()
+            if (orderUsername.isNotEmpty() || orderTotal.isNotEmpty() || file != null) {
+                val message = "Halo kak, saya mau konfirmasi pembayaran atas pesanan :\n" +
+                        "Nama : $orderUsername\n" +
+                        "Alamat : $alamatUser\n" +
+                        "Order ID : $orderId\n" +
+                        "Total : $orderTotal\n" +
+                        "Terima kasih kak"
 
-            val message = "Halo kak, saya mau konfirmasi pembayaran atas pesanan :\n" +
-                    "Nama : $orderUsername\n" +
-                    "Alamat : $alamatUser\n" +
-                    "Order ID : $orderId\n" +
-                    "Total : $orderTotal\n" +
-                    "Terima kasih kak"
-
-            val sendIntent = Intent("android.intent.action.MAIN")
-            sendIntent.putExtra("jid", "6287887003907" + "@s.whatsapp.net") // Ganti dengan nomor WhatsApp yang dituju
-            sendIntent.putExtra(Intent.EXTRA_STREAM,
-                file?.let { it1 -> FileProvider.getUriForFile(this, "com.dissy.lizkitchen", it1) })
-            sendIntent.putExtra(Intent.EXTRA_TEXT, message)
-            sendIntent.action = Intent.ACTION_SEND
-            sendIntent.setPackage("com.whatsapp")
-            sendIntent.type = "image/*"
-            sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            startActivity(sendIntent)
+                val sendIntent = Intent("android.intent.action.MAIN")
+                sendIntent.putExtra("jid", "6287887003907" + "@s.whatsapp.net") // Ganti dengan nomor WhatsApp yang dituju
+                sendIntent.putExtra(Intent.EXTRA_STREAM,
+                    file?.let { it1 -> FileProvider.getUriForFile(this, "com.dissy.lizkitchen", it1) })
+                sendIntent.putExtra(Intent.EXTRA_TEXT, message)
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.setPackage("com.whatsapp")
+                sendIntent.type = "image/*"
+                sendIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                startActivity(sendIntent)
+            }
         }
     }
 

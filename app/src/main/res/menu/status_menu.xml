@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_semua"
+        android:title="Semua" />
+    <item
+        android:id="@+id/menu_selesai"
+        android:title="Selesai" />
+    <item
+        android:id="@+id/menu_dibatalkan"
+        android:title="Dibatalkan" />
+    <item
+        android:id="@+id/menu_menungguPembayaran"
+        android:title="Menunggu Pembayaran" />
+    <item
+        android:id="@+id/menu_sedangDikirim"
+        android:title="Sedang Dikirim" />
+    <item
+        android:id="@+id/menu_sudahDikonfirmasi"
+        android:title="Sudah Dikonfirmasi" />
+    <item
+        android:id="@+id/menu_sedangDiproses"
+        android:title="Sedang Diproses" />
+    <item
+        android:id="@+id/menu_ambilSendiri"
+        android:title="Ambil Sendiri" />
+    <item
+        android:id="@+id/menu_pesanAntar"
+        android:title="Pesan Antar" />
+</menu>
