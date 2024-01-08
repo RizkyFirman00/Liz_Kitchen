@@ -60,6 +60,7 @@ class OrderActivity : AppCompatActivity() {
                             orderId = document.getString("orderId") ?: "",
                             status = document.getString("status") ?: "",
                             totalPrice = document.getLong("totalPrice") ?: 0,
+                            tanggalOrder = document.getString("tanggalOrder") ?: "Menunggu pembayaran",
                             metodePengambilan = document.getString("metodePengambilan") ?: "",
                             user = userInfo?.let {
                                 User(

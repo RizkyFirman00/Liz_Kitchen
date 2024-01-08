@@ -67,7 +67,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     status = it.getString("status") ?: "",
                     totalPrice = it.getLong("totalPrice") ?: 0,
                     metodePengambilan = it.getString("metodePengambilan") ?: "",
-                    tanggalOrder = it.getString("tanggalOrder") ?: "",
+                    tanggalOrder = it.getString("tanggalOrder") ?: "Menunggu pembayaran",
                     user = userInfo?.let {
                         User(
                             userId = it["userId"] as? String ?: "",

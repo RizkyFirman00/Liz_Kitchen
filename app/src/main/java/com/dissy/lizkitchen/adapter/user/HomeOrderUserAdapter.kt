@@ -42,7 +42,7 @@ class HomeOrderUserAdapter(private val onItemClick: (String) -> Unit) : ListAdap
                 val formatedPrice = formatAndDisplayCurrency(order.totalPrice.toString())
                 tvTotalHarga.text = formatedPrice
                 tvMetodePengambilan.text = order.metodePengambilan
-
+                tvTanggalOrder.text = order.tanggalOrder
                 val orderCakeAdapter = HomeOrderUserCakeAdapter()
                 rvOrderCakeUser.adapter = orderCakeAdapter
                 rvOrderCakeUser.layoutManager = LinearLayoutManager(itemView.context)

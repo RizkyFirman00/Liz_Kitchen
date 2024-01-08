@@ -170,10 +170,10 @@ class CakeDetailActivity : AppCompatActivity() {
         binding.btnUpdateData.setOnClickListener {
             val namaKue = binding.etNamaKue.text.toString()
             val harga = binding.etHarga.text.toString()
-            val stok = binding.etStok.text.toString()
+            val stok = binding.etStok.text.toString().toLong()
             val imageUrl = file
             Log.d("CakeDetailActivity", "$namaKue, $harga, $stok, $imageUrl")
-            if (namaKue.isNotEmpty() || harga.isNotEmpty() || stok.isNotEmpty() && imageUrl != null) {
+            if (namaKue.isNotEmpty() || harga.isNotEmpty() || imageUrl != null) {
                 file?.let { it1 ->
                     uploadImageAndGetUrl(
                         cakeId as String, namaKue, harga, stok,
@@ -288,7 +288,7 @@ class CakeDetailActivity : AppCompatActivity() {
         cakeId: String,
         namaKue: String,
         harga: String,
-        stok: String,
+        stok: Long,
         gambar: File
     ) {
         binding.apply {
@@ -299,6 +299,7 @@ class CakeDetailActivity : AppCompatActivity() {
             btnCamera.isEnabled = false
             btnGaleri.isEnabled = false
         }
+
         if (isImageChanged) {
             // Jika gambar berubah, upload gambar baru ke Firebase Storage
             val storageRef = storage.reference
@@ -318,14 +319,10 @@ class CakeDetailActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-        } else if (gambar is File) {
+        } else {
             // Jika gambar tidak berubah dan berupa File, gunakan URL gambar yang sudah ada di Firestore
             Log.d("CakeDetailActivity", "else 2 uploadImageAndGetUrl: $gambar")
             updateDataInFirestore(cakeId, namaKue, harga, stok, gambar.path)
-        } else {
-            // Kasus lainnya, misalnya jika gambar berupa URL String yang sudah ada di Firestore
-            Log.d("CakeDetailActivity", "else 3 uploadImageAndGetUrl: $gambar")
-            updateDataInFirestore(cakeId, namaKue, harga, stok, gambar as String)
         }
         binding.apply {
             progressBar2.visibility = View.GONE
@@ -341,7 +338,7 @@ class CakeDetailActivity : AppCompatActivity() {
         cakeId: String,
         namaKue: String,
         harga: String,
-        stok: String,
+        stok: Long,
         imageUrl: String
     ) {
         val data = hashMapOf(
