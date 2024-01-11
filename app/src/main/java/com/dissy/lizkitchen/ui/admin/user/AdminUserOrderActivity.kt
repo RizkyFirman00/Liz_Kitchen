@@ -122,7 +122,8 @@ class AdminUserOrderActivity : AppCompatActivity() {
                 orderList.add(order)
             }
             Log.d("AdminUserAct", "onSuccess: $orderList")
-            adminUserAdapter.submitList(orderList)
+            val sortedOrderList = orderList.sortedByDescending { it.tanggalOrder }
+            adminUserAdapter.submitList(sortedOrderList)
         }.addOnFailureListener { exception ->
             Log.d("TAG", "Error getting documents: ", exception)
         }
@@ -133,6 +134,6 @@ class AdminUserOrderActivity : AppCompatActivity() {
         val intent = Intent(this, AdminUserOrderDetailActivity::class.java)
         intent.putExtra("orderId", orderId)
         startActivity(intent)
-
+        finish()
     }
 }

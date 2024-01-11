@@ -6,6 +6,7 @@ data class Order (
     val status: String = "",
     val metodePengambilan: String = "",
     val tanggalOrder: String = "",
+    val jamOrder: String = "",
     val totalPrice: Long = 0,
     val user: User = User(),
 )

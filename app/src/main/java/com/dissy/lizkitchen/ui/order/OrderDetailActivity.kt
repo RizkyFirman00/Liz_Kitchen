@@ -68,6 +68,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     totalPrice = it.getLong("totalPrice") ?: 0,
                     metodePengambilan = it.getString("metodePengambilan") ?: "",
                     tanggalOrder = it.getString("tanggalOrder") ?: "Menunggu pembayaran",
+                    jamOrder = it.getString("jamOrder") ?: "Menunggu pembayaran",
                     user = userInfo?.let {
                         User(
                             userId = it["userId"] as? String ?: "",
@@ -134,6 +135,7 @@ class OrderDetailActivity : AppCompatActivity() {
                     }
                     tvAlamat.text = order.user.alamat
                     tvOrderId.text = order.orderId
+                    tvJamOrder.text = order.jamOrder
                     tvOrderDate.text = order.tanggalOrder
                     tvMetodePengambilan.text = order.metodePengambilan
                     val priceSum = formatAndDisplayCurrency(order.totalPrice.toString())

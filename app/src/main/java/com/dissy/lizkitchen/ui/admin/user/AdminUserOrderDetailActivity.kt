@@ -21,6 +21,9 @@ import com.dissy.lizkitchen.model.Order
 import com.dissy.lizkitchen.model.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AdminUserOrderDetailActivity : AppCompatActivity() {
     private val db = Firebase.firestore
@@ -67,6 +70,7 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                     status = orderDocument.getString("status") ?: "",
                     totalPrice = orderDocument.getLong("totalPrice") ?: 0,
                     tanggalOrder = orderDocument.getString("tanggalOrder") ?: "Menunggu pembayaran",
+                    jamOrder = orderDocument.getString("jamOrder") ?: "Menunggu pembayaran",
                     metodePengambilan = orderDocument.getString("metodePengambilan") ?: "",
                     user = userInfo?.let {
                         User(
@@ -90,6 +94,7 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                     tvStatus.text = order.status
                     tvOrderDate.text = order.tanggalOrder
                     tvMetodePengambilan.text = order.metodePengambilan
+                    tvJamOrder.text = order.jamOrder
                     when (order.status) {
                         "Selesai" -> {
                             binding.tvStatus.setTextColor(android.graphics.Color.parseColor("#0ACB12"))
@@ -154,17 +159,18 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
         binding.btnConfirm.setOnClickListener {
             val time = System.currentTimeMillis()
             val date = java.sql.Date(time)
-            val sdf = java.text.SimpleDateFormat("dd-MM-yyyy")
+            val sdf = SimpleDateFormat("dd-MM-yyyy")
             val formattedDate = sdf.format(date)
             db.collection("orders").document(orderId).update(
+                "jamOrder", getCurrentTime(),
                 "tanggalOrder", formattedDate,
                 "status", "Sudah Dikonfirmasi"
             )
                 .addOnSuccessListener {
-
                     cutStock(orderId)
                     db.collection("users").document(userId).collection("orders").document(orderId)
                         .update(
+                            "jamOrder", getCurrentTime(),
                             "tanggalOrder", formattedDate,
                             "status", "Sudah Dikonfirmasi"
                         )
@@ -172,8 +178,7 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                         .addOnFailureListener { e -> Log.w("TAG", "Error updating document", e) }
                     Toast.makeText(this, "Berhasil mengkonfirmasi pesanan", Toast.LENGTH_SHORT)
                         .show()
-                    Intent(this, AdminUserOrderActivity::class.java).also {
-                        startActivity(it)
+                    startActivity(Intent(this, AdminUserOrderActivity::class.java)).also {
                         finish()
                     }
                 }
@@ -417,6 +422,11 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
         }
 
         return "Rp. $formattedText"
+    }
+
+    private fun getCurrentTime(): String {
+        val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 
     private fun cutStock(orderId: String) {
