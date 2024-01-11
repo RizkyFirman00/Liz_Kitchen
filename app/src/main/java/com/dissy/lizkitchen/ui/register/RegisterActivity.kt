@@ -33,7 +33,11 @@ class RegisterActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
             val alamat = "Belum diisi"
 
-            registerUser(email, phoneNumber, username, password, alamat)
+            if (email.isEmpty() || phoneNumber.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Harap isi semua kolom", Toast.LENGTH_SHORT).show()
+            } else {
+                registerUser(email, phoneNumber, username, password, alamat)
+            }
         }
     }
 
