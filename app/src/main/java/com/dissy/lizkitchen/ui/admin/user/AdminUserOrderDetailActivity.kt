@@ -66,7 +66,7 @@ class AdminUserOrderDetailActivity : AppCompatActivity() {
                     orderId = orderDocument.getString("orderId") ?: "",
                     status = orderDocument.getString("status") ?: "",
                     totalPrice = orderDocument.getLong("totalPrice") ?: 0,
-                    tanggalOrder = orderDocument.getString("tanggalOrder") ?: "",
+                    tanggalOrder = orderDocument.getString("tanggalOrder") ?: "Menunggu pembayaran",
                     metodePengambilan = orderDocument.getString("metodePengambilan") ?: "",
                     user = userInfo?.let {
                         User(

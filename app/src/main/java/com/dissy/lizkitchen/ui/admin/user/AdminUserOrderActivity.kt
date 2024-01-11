@@ -106,6 +106,7 @@ class AdminUserOrderActivity : AppCompatActivity() {
                     orderId = document.getString("orderId") ?: "",
                     status = document.getString("status") ?: "",
                     totalPrice = document.getLong("totalPrice") ?: 0,
+                    tanggalOrder = document.getString("tanggalOrder") ?: "",
                     user = userInfo?.let {
                         User(
                             userId = it["userId"] as? String ?: "",
